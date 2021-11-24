@@ -31,17 +31,24 @@ const findCities = async (cityUrl, cityName) => {
   console.log(dataJson._embedded["city:search-results"]);
 };
 
-seacrhInput.addEventListener("input",(evt)=>{
-    if(evt.target.value.trim()){
-        findCities(cityUrl,evt.target.value);
-    }
-    else{
-        citySeggestionList.classList.add("hidden");
-    }
-});
+seacrhInput.addEventListener("input",debounce((evt)=>{
+  if(evt.target.value.trim()){
+    findCities(cityUrl,evt.target.value);
+}
+else{
+    citySeggestionList.classList.add("hidden");
+}
+},500))
 function showDetails(evt){
     showConditionWeather(BASEURL, evt.childNodes[0].nodeValue.split(",")[0].toLowerCase());
     show5Days(weekURL, evt.childNodes[0].nodeValue.split(",")[0].toLowerCase());
         citySeggestionList.classList.add("hidden");
         seacrhInput.value="";
+}
+function debounce(func, timeout = 300){
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
 }
