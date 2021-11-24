@@ -1,0 +1,37 @@
+@import './_mixin.scss';
+
+*{
+    margin: 0;
+    padding: 0;
+}
+// main font
+@font-face {
+    font-family: Raleway;
+    src: url('../fonts/Raleway/Raleway.ttf') format('ttf');
+  }
+//    Thin font
+  @font-face {
+    font-family: RalewayThin ;
+    src: url('../fonts/Raleway-Thin/Raleway-Thin.ttf') format('ttf');
+  }
+//   bold font
+  @font-face {
+    font-family: RalewayBold;
+    src: url('../fonts/Raleway-Bold/Raleway-Bold.ttf') format('ttf');
+  }
+:root{
+    --primary-color:#fff;
+    --bg-firstColor:#133568;
+    --bg-secondColor:#3994da;
+    --bg-404primary-color:#48A8E5;
+}
+body{
+    font-family: 'raleway';
+}
+  main{
+    @include pageBg;
+    min-height: 100vh;
+  }
+  .hidden{
+    display: none;
+  }

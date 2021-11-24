@@ -1,0 +1,54 @@
+.preloader{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: var(--primary-color);
+    transition: opacity ease;
+}
+.cloud,.sun_pre{
+    position: absolute;
+}
+.sun_pre{
+    color: yellow;
+    font-size: 20rem;
+    top: 28%;
+    left: 38%;
+    animation: moving_sun 2s   infinite linear alternate;
+}
+.cloud{
+    font-size: 10rem;
+    color: #ccc;
+    &_1{
+        top: 10%;
+    }
+    &_2{
+        top: 40%;
+    }
+    &_3{
+        top: 70%;
+    }
+    animation: moving_clouds  2s   infinite linear alternate;
+}
+.hidden{
+    opacity: 0;
+    pointer-events: none;
+}
+@keyframes moving_sun {
+    0%{
+        transform: translate(0,10%);
+    }
+    50%{
+        transform: translate(20%,30%);
+    }100%{
+        transform: translate(80,70%);
+    }
+}
+@keyframes moving_clouds {
+    0%{
+        transform: translate(10rem,0%);
+    }
+    100%{
+        transform: translate(80rem,0%);
+    }
+}

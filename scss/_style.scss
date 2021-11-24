@@ -1,0 +1,111 @@
+@import "./_mixin.scss";
+@import "./_breakPoints.scss";
+.seacrh_container {
+  position: relative;
+  padding: 2rem 0;
+  height: 7rem;
+  #seacrh_input {
+    @include heWi(100%, 100%);
+    border: none;
+    padding-left: 1rem;
+    color: var(--primary-color);
+    letter-spacing: 2px;
+    @include glassStyle;
+    &::placeholder {
+      color: var(--primary-color);
+      text-transform: capitalize;
+    }
+    &:active {
+      outline: none;
+    }
+  }
+  .citySEggestionList{
+    position: absolute;
+    @include glassStyle;
+    width: 100%;
+    max-height: 12rem;
+    overflow-y: auto;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    
+    transition: all .2s ease;
+    &_item{
+      cursor: pointer;
+      padding: .5rem 1rem;
+      &:hover{
+        background-color: #e6e6e6
+      }
+      &_link{
+        text-decoration: none;
+        @include fontOpt(1.2rem,300,var(--bg-firstColor),capitalize)
+
+      }
+    }
+  }
+}
+.city_info_container {
+    @include flexOpt(row, space-between,stretch);
+    // align-items: stretch;
+  .city_info {
+    margin: 1rem 0;
+    @include fontOpt(1.2rem, 400,#fff, capitalize);
+    @include flexOpt(column, space-between, flex-start);
+    
+    &-city {
+      @include fontOpt(3rem, 900,#fff,capitalize);
+      
+    }
+    &-day{
+        @include fontOpt(2.2rem, 400,#fff, capitalize);
+    }
+    span>i{
+        margin-right:.5rem; 
+    }
+  }
+  .city_status{
+      @include heWi(100%,100%);
+      .img_container,.img{
+        @include heWi(100%,100%);
+      }
+  }
+  .degree_info_container{
+      .degree_info{
+        @include fontOpt(3.2rem, 400,#fff, capitalize);
+      }
+  }
+}
+// weekInfo_styles.
+.week_info{
+  padding: 2rem 0;
+ @include flexOpt(row,space-between,center);
+ flex-wrap: nowrap;
+ .day{
+  @include flexOpt(column,space-around,center);
+  @include glassStyle;
+  overflow: hidden;
+      transition: all .35s ease-in-out;
+      &:hover{
+        transform: scale(1.1);
+      }
+  margin: 0 1rem;
+  padding: 1.5rem 0;
+   &_img_container{
+    padding: .8rem;
+    margin: 1rem;
+     width: 50%;
+     .img{
+       @include heWi(100%,100%);
+     }
+   }
+   &_name{
+     @include fontOpt(1.5rem,700,var(--primary-color),capitalize);
+     letter-spacing: 1px;
+     margin-bottom: 1rem;
+   }
+   &_degree{
+    @include fontOpt(1.5rem,200,var(--primary-color));
+    margin-bottom: 2rem;
+   }
+ }
+}
