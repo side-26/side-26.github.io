@@ -1,6 +1,83 @@
-.header{
+.body_404{
+    overflow: hidden;
+}
+.header {
+  background-color: var(--bg-secondColor);
+  width: 80%;
+  height: 5rem;
+  clip-path: polygon(0 0, 0% 100%, 100% 0);
+}
+.main {
+  @include flexOpt(column, center, center);
+  min-height: 80vh;
+  position: relative;
+  z-index: 2;
+  h1 {
+    @include fontOpt(15.2rem, 700, var(--primary-color));
+    
+    z-index: 2;
+  }
+  p {
+    @include fontOpt(2.2rem, 400, var(--primary-color), capitalize);
+    z-index: 2;
+  }
+  .circle {
+    position: absolute;
+    @include heWi(15rem, 15rem);
+    border-radius: 50%;
     background-color: var(--bg-secondColor);
-    width: 80%;
-    height: 5rem;
-    clip-path: polygon(0 0, 0% 100%, 100% 0);
+    z-index: 1;
+    // &_big {
+    //   @include heWi(30rem, 30rem);
+    //   animation: transforming  2s   infinite linear alternate;
+    //   @include circlestyle(var(--bg-secondColor));
+    // }
+    &_medium {
+      @include heWi(20rem, 20rem);
+      left: 30%;
+      animation: Moving 2s   infinite ease-in-out alternate-reverse;
+      @include circlestyle(var(--bg-404primary-color));
+    }
+
+    &_small {
+      @include heWi(20rem, 20rem);
+      right: 30%;
+      animation: Moving 2s   infinite ease-in-out alternate;
+    }
+  }
+  .btn_container{
+      z-index: 10;
+     margin-top: 2rem;
+     .btn{
+        background-color: transparent;
+        border: none;
+        padding: 0.8rem 3rem;
+        cursor: pointer;
+        @include fontOpt(1.3rem,500,#191919,capitalize);
+
+      }
+  }
+}
+.footer {
+  @include heWi(100%,calc(20vh - 5rem));
+  background-color: var(--bg-secondColor);
+}
+
+@keyframes Moving{
+    0%{
+        transform: translate(5rem,0);
+    }
+    50%{
+        transform: translate(0,15rem);
+    }
+    100%{
+        transform: translate(0,-15rem);
+    }
+}
+@keyframes transforming {
+    
+    
+    100%{
+        opacity: 0.2;
+    }
 }
