@@ -10,14 +10,13 @@ const findCities = async (cityUrl, cityName) => {
   
   const dataJson = await fetchData.json();
   citySeggestionList.classList.remove("hidden");
+  let htmlLi='' ;
  if(dataJson.count==0){
-    citySeggestionList.innerHTML= `<li class="citySEggestionList_item">
-    there is no result for ${seacrhInput.value}
-  </li>`;
- }
- let htmlLi='' ;
+  htmlLi=`<li onclick="restarting()" class="citySEggestionList_item">
+          There is no results for ${seacrhInput.value}
+</li>`
+ }else{
   dataJson._embedded["city:search-results"].forEach((city) => {
-    
    htmlLi += `<li class="citySEggestionList_item">
         <a
           class="citySEggestionList_item_link"
@@ -27,6 +26,8 @@ const findCities = async (cityUrl, cityName) => {
         >
       </li>`;
   });
+ }
+ 
   citySeggestionList.innerHTML=htmlLi;
   console.log(dataJson._embedded["city:search-results"]);
 };
@@ -38,12 +39,13 @@ seacrhInput.addEventListener("input",debounce((evt)=>{
 else{
     citySeggestionList.classList.add("hidden");
 }
+
 },500))
 function showDetails(evt){
     showConditionWeather(BASEURL, evt.childNodes[0].nodeValue.split(",")[0].toLowerCase());
     show5Days(weekURL, evt.childNodes[0].nodeValue.split(",")[0].toLowerCase());
         citySeggestionList.classList.add("hidden");
-        seacrhInput.value="";
+        restarting();
 }
 function debounce(func, timeout = 300){
   let timer;
@@ -51,4 +53,7 @@ function debounce(func, timeout = 300){
     clearTimeout(timer);
     timer = setTimeout(() => { func.apply(this, args); }, timeout);
   };
+}
+function restarting(){
+  seacrhInput.value="";
 }

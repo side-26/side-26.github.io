@@ -1,6 +1,7 @@
 const BASEURL = `https://api.openweathermap.org/data/2.5/weather?appid=b03ffc4e4f0d7423fc117aa79b810ce6&units=metric&q=`;
 // identify dom to js
 const seacrhInput = document.getElementById("seacrh_input");
+const container=document.getElementById('city_info_container');
 const cityName = document.getElementById("city_info-city");
 const currentDay = document.getElementById("city_info-day");
 const cityHummidity = document.getElementById("city_info-humidity");
@@ -21,7 +22,7 @@ seacrhInput.addEventListener("keypress", (evt) => {
 const showConditionWeather = (weatherAPI, cityName) => {
   fetch(`${weatherAPI}${cityName}`)
     .then(async (res) => {
-      if(res.status>200){
+      if(res.status>300){
         alert("404 error check your connection and site's url!!!");
         return;
       }
@@ -42,4 +43,6 @@ const assigningTODom = (jsonItem) => {
   cityDegreeInfo.innerHTML = `+${jsonItem.main.temp}&#x2103;`;
   cityPressureInfo.innerHTML = `<i class="fas fa-bullseye"></i>${jsonItem.main.pressure}hPa`;
   cityStatusImage.src = `http://openweathermap.org/img/wn/${jsonItem.weather[0].icon}@4x.png`;
+  container.classList.remove("hidden");
+  weekContainer.classList.remove("hidden");
 };
