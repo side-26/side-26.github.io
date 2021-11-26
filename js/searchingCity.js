@@ -45,6 +45,7 @@ function showDetails(evt){
     showConditionWeather(BASEURL, evt.childNodes[0].nodeValue.split(",")[0].toLowerCase());
     show5Days(weekURL, evt.childNodes[0].nodeValue.split(",")[0].toLowerCase());
         citySeggestionList.classList.add("hidden");
+        makingLocalstorge(evt.childNodes[0].nodeValue.split(",")[0].toLowerCase());
         restarting();
 }
 function debounce(func, timeout = 300){
