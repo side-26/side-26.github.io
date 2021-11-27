@@ -39,10 +39,24 @@ const assigningTODom = (jsonItem) => {
   cityName.innerHTML = `${jsonItem.name},${jsonItem.sys.country}`;
   currentDay.innerHTML = DAY.toLocaleDateString("en-US", { weekday: "long" });
   cityHummidity.innerHTML = `<i class="fas fa-tint"></i>${jsonItem.main.humidity}%`;
-  cityWindInfo.innerHTML = `<i class="fas fa-flag-checkered"></i>west, ${jsonItem.wind.speed} m/s`;
+  cityWindInfo.innerHTML = `<i class="fas fa-flag-checkered"></i>${navigate(jsonItem.wind.deg)}, ${jsonItem.wind.speed} m/s`;
   cityDegreeInfo.innerHTML = `+${jsonItem.main.temp}&#x2103;`;
   cityPressureInfo.innerHTML = `<i class="fas fa-bullseye"></i>${jsonItem.main.pressure}hPa`;
   cityStatusImage.src = `http://openweathermap.org/img/wn/${jsonItem.weather[0].icon}@4x.png`;
   container.classList.remove("hidden");
   weekContainer.classList.remove("hidden");
 };
+const navigate=(deg)=>{
+  const degreesNav={
+    0:"north"
+    ,
+    90:"west",
+    180:"south",
+    270:"east",
+    360:"norh"
+  }
+ const degree= Object.keys(degreesNav).find((key)=>{
+    return key>=deg
+  })
+  return degreesNav[degree];
+}
