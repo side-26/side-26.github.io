@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pre-prompt Workflow"
+  short_description: "Validate and track Regal prompt conversations"
+  default_prompt: "Use $pre-prompt-workflow to validate and track my Regal Front request."
