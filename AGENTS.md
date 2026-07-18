@@ -3,3 +3,7 @@
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
+
+# Portfolio Front Agent Instructions
+
+Before handling any user request in this repository, use the project-local `pre-prompt-workflow` skill at `.agents/skills/pre-prompt-workflow/SKILL.md`. Enforce its prompt validation, ID continuation, and conversation-record requirements.
