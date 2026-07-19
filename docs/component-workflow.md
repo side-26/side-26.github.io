@@ -18,3 +18,10 @@ Use these rules whenever creating or reorganizing React components in this proje
 - Build larger UI components by composing base components rather than duplicating their behavior.
 - Keep application-specific content and layout decisions outside base components.
 - Add responsive and performance-sensitive props when the underlying Next.js primitive requires them.
+
+## Global components
+
+- Place components and providers mounted by the root layout and shared across the entire application in `src/components/global/`.
+- Keep the root layout as a Server Component and isolate context, state, effects, and browser APIs inside the smallest possible Client Component boundary.
+- Pass root-layout content through global providers as `children` so Server Components remain server-rendered.
+- Import global components directly from their files; do not add barrel files.

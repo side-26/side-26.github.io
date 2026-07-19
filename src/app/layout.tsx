@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
+
+import { DirectionProvider } from "@/components/global/direction-provider";
 import { cn } from "@/lib/utils";
+
+import "./globals.css";
 
 const IranYekan = localFont({
   src: [
@@ -64,8 +67,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl" className={cn("tw:h-full", "tw:antialiased", IranYekan.variable)}>
-      <body className="tw:flex tw:min-h-full tw:flex-col">{children}</body>
+    <html className={cn("tw:h-full", "tw:antialiased", IranYekan.variable)}>
+      <body className="tw:flex tw:min-h-full tw:flex-col">
+        <DirectionProvider>{children}</DirectionProvider>
+      </body>
     </html>
   );
 }
