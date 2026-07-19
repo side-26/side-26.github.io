@@ -1,0 +1,4 @@
+interface:
+  display_name: "Component Workflow"
+  short_description: "Build consistent accessible React components"
+  default_prompt: "Use $component-workflow to create or update a project React component."

@@ -5,20 +5,20 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "tw:group/button tw:relative tw:isolate tw:inline-flex tw:shrink-0 tw:items-center tw:justify-center tw:overflow-hidden tw:rounded-xl tw:border tw:border-white/45 tw:bg-clip-padding tw:text-sm tw:font-medium tw:whitespace-nowrap tw:shadow-[inset_0_1px_0_rgb(255_255_255/0.45),0_1px_2px_rgb(15_23_42/0.12),0_8px_24px_rgb(15_23_42/0.08)] tw:backdrop-blur-xl tw:backdrop-saturate-150 tw:transition-[color,background-color,border-color,box-shadow,transform,opacity] tw:duration-200 tw:outline-none tw:select-none tw:before:pointer-events-none tw:before:absolute tw:before:inset-x-1 tw:before:top-px tw:before:h-px tw:before:rounded-full tw:before:bg-white/60 tw:focus-visible:border-ring tw:focus-visible:ring-3 tw:focus-visible:ring-ring/35 tw:active:not-aria-[haspopup]:translate-y-px tw:disabled:pointer-events-none tw:disabled:opacity-55 tw:aria-invalid:border-destructive tw:aria-invalid:ring-3 tw:aria-invalid:ring-destructive/20 tw:motion-reduce:transition-none tw:dark:border-white/15 tw:dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.15),0_1px_2px_rgb(0_0_0/0.35),0_10px_30px_rgb(0_0_0/0.2)] tw:dark:before:bg-white/25 tw:dark:aria-invalid:border-destructive/50 tw:dark:aria-invalid:ring-destructive/40 tw:[&_svg]:pointer-events-none tw:[&_svg]:shrink-0 tw:[&_svg:not([class*='size-'])]:size-4",
+  "tw:group/button tw:relative tw:isolate tw:inline-flex tw:shrink-0 tw:items-center tw:justify-center tw:overflow-hidden tw:rounded-xl tw:border tw:border-[var(--glass-border)] tw:bg-clip-padding tw:text-sm tw:font-medium tw:whitespace-nowrap tw:shadow-[inset_0_1px_0_var(--glass-highlight),0_1px_2px_var(--glass-shadow),0_8px_24px_var(--glass-shadow-soft)] tw:backdrop-blur-xl tw:backdrop-saturate-150 tw:transition-[color,background-color,border-color,box-shadow,transform,opacity] tw:duration-200 tw:outline-none tw:select-none tw:[--glass-fallback-background:var(--background)] tw:before:pointer-events-none tw:before:absolute tw:before:inset-x-1 tw:before:top-px tw:before:h-px tw:before:rounded-full tw:before:bg-[var(--glass-highlight)] tw:focus-visible:border-ring tw:focus-visible:ring-3 tw:focus-visible:ring-ring/35 tw:active:not-aria-[haspopup]:translate-y-px tw:disabled:pointer-events-none tw:disabled:opacity-55 tw:aria-invalid:border-destructive tw:aria-invalid:ring-3 tw:aria-invalid:ring-destructive/20 tw:motion-reduce:transition-none tw:[&_svg]:pointer-events-none tw:[&_svg]:shrink-0 tw:[&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default:
-          "tw:bg-primary/80 tw:text-primary-foreground tw:hover:bg-primary/90 tw:dark:bg-primary/75 tw:dark:hover:bg-primary/85",
+          "tw:bg-primary/80 tw:text-primary-foreground tw:[--glass-fallback-background:var(--primary)] tw:hover:bg-primary/90",
         outline:
-          "tw:border-border/70 tw:bg-background/60 tw:text-foreground tw:hover:bg-muted/75 tw:aria-expanded:bg-muted/75 tw:dark:bg-background/40 tw:dark:hover:bg-muted/60",
+          "tw:bg-background/60 tw:text-foreground tw:hover:bg-muted/75 tw:aria-expanded:bg-muted/75",
         secondary:
-          "tw:bg-secondary/75 tw:text-secondary-foreground tw:hover:bg-secondary/90 tw:aria-expanded:bg-secondary/90 tw:dark:bg-secondary/65 tw:dark:hover:bg-secondary/80",
+          "tw:bg-secondary/75 tw:text-secondary-foreground tw:[--glass-fallback-background:var(--secondary)] tw:hover:bg-secondary/90 tw:aria-expanded:bg-secondary/90",
         ghost:
-          "tw:border-transparent tw:bg-background/20 tw:text-foreground tw:shadow-none tw:hover:border-white/35 tw:hover:bg-muted/55 tw:aria-expanded:bg-muted/55 tw:dark:bg-background/10 tw:dark:hover:border-white/10 tw:dark:hover:bg-muted/45",
+          "tw:border-transparent tw:bg-background/20 tw:text-foreground tw:shadow-none tw:hover:border-border tw:hover:bg-muted/55 tw:aria-expanded:bg-muted/55",
         destructive:
-          "tw:border-destructive/25 tw:bg-destructive/15 tw:text-destructive tw:hover:bg-destructive/25 tw:focus-visible:border-destructive/40 tw:focus-visible:ring-destructive/20 tw:dark:bg-destructive/20 tw:dark:hover:bg-destructive/30 tw:dark:focus-visible:ring-destructive/40",
+          "tw:border-destructive/25 tw:bg-destructive/15 tw:text-destructive tw:hover:bg-destructive/25 tw:focus-visible:border-destructive/40 tw:focus-visible:ring-destructive/20",
         link: "tw:border-transparent tw:bg-transparent tw:text-primary tw:underline-offset-4 tw:shadow-none tw:backdrop-blur-none tw:before:hidden tw:hover:underline",
       },
       size: {
@@ -61,6 +61,7 @@ function Button({
     <ButtonPrimitive
       {...props}
       data-slot="button"
+      data-glass-surface={variant === "link" ? undefined : ""}
       data-loading={isLoading ? "" : undefined}
       aria-busy={isLoading || undefined}
       disabled={disabled || isLoading}

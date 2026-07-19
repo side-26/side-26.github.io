@@ -1,4 +1,5 @@
 <!-- BEGIN:nextjs-agent-rules -->
+
 # This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
@@ -10,4 +11,4 @@ Before handling any user request in this repository, use the project-local `pre-
 
 ## Component Creation
 
-Follow `docs/component-workflow.md` whenever creating or reorganizing React components. In particular, place all atomic components in `src/components/base/`.
+Before creating, reorganizing, styling, reviewing, or auditing React components, use the project-local `component-workflow` skill at `.agents/skills/component-workflow/SKILL.md` and follow `docs/component-workflow.md`. In particular, place all atomic components in `src/components/base/` and apply the glass visual language to components that own visible UI surfaces.
