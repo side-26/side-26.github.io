@@ -117,6 +117,22 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@keyframes button-loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+[data-slot="button-loading-bar"]:dir(rtl) {
+  animation-direction: reverse;
+}
+
 @layer base {
   * {
     @apply tw:border-border tw:outline-ring/50;
