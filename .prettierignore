@@ -1,0 +1,18 @@
+# Dependencies and package-manager output
+node_modules/
+pnpm-lock.yaml
+
+# Repository automation metadata
+.agents/
+.claude/
+AGENTS.md
+CLAUDE.md
+
+# Next.js and test/build artifacts
+.next/
+out/
+build/
+coverage/
+
+# Generated files
+next-env.d.ts

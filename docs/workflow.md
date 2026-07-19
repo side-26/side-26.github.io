@@ -4,11 +4,11 @@ This workflow defines how prompts for the `portfolio-front-app` project are clas
 
 ## Prompt types
 
-| Tag | Meaning | Example |
-| --- | --- | --- |
-| `fea` | A new feature or capability | `fea: add a saved-search page` |
-| `fix` | An improvement that is neither a new feature nor a bug fix | `fix: improve the empty-state wording` |
-| `hotfix` | A fix for a bug in the project | `hotfix: stop the checkout page from crashing` |
+| Tag      | Meaning                                                    | Example                                        |
+| -------- | ---------------------------------------------------------- | ---------------------------------------------- |
+| `fea`    | A new feature or capability                                | `fea: add a saved-search page`                 |
+| `fix`    | An improvement that is neither a new feature nor a bug fix | `fix: improve the empty-state wording`         |
+| `hotfix` | A fix for a bug in the project                             | `hotfix: stop the checkout page from crashing` |
 
 Start a conversation with:
 

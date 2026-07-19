@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" prefix(tw);
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -119,12 +119,12 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply tw:border-border tw:outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply tw:bg-background tw:text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply tw:font-sans;
   }
 }
