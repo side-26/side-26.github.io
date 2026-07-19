@@ -23,6 +23,13 @@ The project focuses on responsive design, reusable components, clean TypeScript 
 - Reusable, maintainable React components
 - Accessible and user-friendly interface
 
+## Project Assets
+
+- `public/logo/logo.jpg` — the portfolio's primary square logo (1254 × 1254).
+- `public/images/mahdi-rashidi.webp` — Mahdi Rashidi's portfolio portrait (1537 × 1920).
+
+Both files live under `public/` and can be referenced from Next.js with the static URLs `/logo/logo.jpg` and `/images/mahdi-rashidi.webp`.
+
 ## Tech Stack
 
 - **React** — component-based user interfaces
