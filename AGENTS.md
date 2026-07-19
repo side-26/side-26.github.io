@@ -7,3 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 # Portfolio Front Agent Instructions
 
 Before handling any user request in this repository, use the project-local `pre-prompt-workflow` skill at `.agents/skills/pre-prompt-workflow/SKILL.md`. Enforce its prompt validation, ID continuation, and conversation-record requirements.
+
+## Component Creation
+
+Follow `docs/component-workflow.md` whenever creating or reorganizing React components. In particular, place all atomic components in `src/components/base/`.
