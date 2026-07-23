@@ -11,7 +11,23 @@ import {
   ShieldCheck,
   Workflow,
 } from "lucide-react";
+import {
+  siBootstrap,
+  siCss,
+  siExpress,
+  siHtml5,
+  siJavascript,
+  siNextdotjs,
+  siNodedotjs,
+  siNuxt,
+  siReact,
+  siSass,
+  siTailwindcss,
+  siTypescript,
+  siVuedotjs,
+} from "simple-icons";
 
+import { TechnologyMark } from "@/components/base/technology-mark";
 import {
   ArchitectureBackdrop,
   HeroEntrance,
@@ -95,6 +111,40 @@ const capabilities = [
   },
 ] as const;
 
+const technologyGroups = [
+  {
+    label: "Frontend",
+    note: "The product surface",
+    technologies: [
+      { label: "HTML", icon: siHtml5 },
+      { label: "CSS", icon: siCss },
+      { label: "SCSS", icon: siSass },
+      { label: "Bootstrap", icon: siBootstrap },
+      { label: "Tailwind CSS", icon: siTailwindcss },
+      { label: "JavaScript", icon: siJavascript },
+      { label: "TypeScript", icon: siTypescript },
+      { label: "React", icon: siReact },
+      { label: "Vue.js", icon: siVuedotjs },
+    ],
+  },
+  {
+    label: "Backend",
+    note: "The application core",
+    technologies: [
+      { label: "Node.js", icon: siNodedotjs },
+      { label: "Express.js", icon: siExpress },
+    ],
+  },
+  {
+    label: "Full-stack",
+    note: "One connected system",
+    technologies: [
+      { label: "Next.js", icon: siNextdotjs },
+      { label: "Nuxt", icon: siNuxt },
+    ],
+  },
+] as const;
+
 const deliverySteps = [
   {
     step: "01",
@@ -134,8 +184,14 @@ const structuredData = {
   knowsAbout: [
     "Full-stack web development",
     "React",
+    "Vue.js",
     "Next.js",
+    "Nuxt",
+    "Node.js",
+    "Express.js",
     "TypeScript",
+    "JavaScript",
+    "Tailwind CSS",
     "Accessible user interfaces",
     "Technical architecture",
     "Search engine optimization",
@@ -146,17 +202,22 @@ function SectionHeading({
   eyebrow,
   title,
   description,
+  id,
 }: {
   eyebrow: string;
   title: string;
   description: string;
+  id?: string;
 }) {
   return (
     <div className="tw:flex tw:max-w-3xl tw:flex-col tw:gap-5">
       <p className="tw:font-mono tw:text-xs tw:font-medium tw:tracking-[0.22em] tw:text-primary tw:uppercase">
         {eyebrow}
       </p>
-      <h2 className="tw:text-3xl tw:font-extrabold tw:tracking-[-0.035em] tw:text-balance tw:sm:text-4xl tw:lg:text-5xl">
+      <h2
+        id={id}
+        className="tw:text-3xl tw:font-extrabold tw:tracking-[-0.035em] tw:text-balance tw:sm:text-4xl tw:lg:text-5xl"
+      >
         {title}
       </h2>
       <p className="tw:max-w-2xl tw:text-base tw:leading-8 tw:text-muted-foreground tw:sm:text-lg">
@@ -205,6 +266,12 @@ export default function HomePage() {
               className="tw:rounded-sm tw:text-sm tw:text-muted-foreground tw:transition-colors tw:hover:text-foreground tw:focus-visible:ring-3 tw:focus-visible:ring-ring/35 tw:focus-visible:outline-none"
             >
               Capabilities
+            </a>
+            <a
+              href="#stack"
+              className="tw:rounded-sm tw:text-sm tw:text-muted-foreground tw:transition-colors tw:hover:text-foreground tw:focus-visible:ring-3 tw:focus-visible:ring-ring/35 tw:focus-visible:outline-none"
+            >
+              Stack
             </a>
             <a
               href="#proof"
@@ -468,6 +535,64 @@ export default function HomePage() {
                   </MotionReveal>
                 );
               })}
+            </div>
+          </section>
+
+          <section id="stack" aria-labelledby="stack-title" className="tw:py-24 tw:sm:py-32">
+            <SectionHeading
+              id="stack-title"
+              eyebrow="The working stack"
+              title="A focused toolkit for the full web product."
+              description="From the first semantic element to the server that answers it, these are the technologies I use to turn product decisions into fast, maintainable web experiences."
+            />
+
+            <div
+              data-stack-board
+              className="tw:mt-14 tw:overflow-hidden tw:rounded-4xl tw:border-y tw:border-border/80"
+            >
+              {technologyGroups.map((group) => (
+                <div
+                  key={group.label}
+                  className="tw:border-b tw:border-border/80 tw:last:border-b-0"
+                >
+                  <section
+                    aria-labelledby={`stack-${group.label.toLowerCase()}-title`}
+                    className="tw:grid tw:gap-8 tw:bg-background/50 tw:px-4 tw:py-8 tw:sm:px-6 tw:lg:grid-cols-[13rem_1fr] tw:lg:gap-12 tw:lg:px-8 tw:lg:py-10"
+                  >
+                    <div className="tw:flex tw:flex-col tw:gap-3">
+                      <div className="tw:flex tw:items-center tw:gap-3">
+                        <span
+                          aria-hidden="true"
+                          className="tw:size-2 tw:rounded-full tw:bg-primary tw:shadow-[0_0_16px_var(--primary)]"
+                        />
+                        <p className="tw:font-mono tw:text-[0.65rem] tw:tracking-[0.18em] tw:text-primary tw:uppercase">
+                          {group.note}
+                        </p>
+                      </div>
+                      <h3
+                        id={`stack-${group.label.toLowerCase()}-title`}
+                        className="tw:text-2xl tw:font-extrabold tw:tracking-[-0.03em]"
+                      >
+                        {group.label}
+                      </h3>
+                      <p className="tw:font-mono tw:text-xs tw:text-muted-foreground">
+                        {String(group.technologies.length).padStart(2, "0")} technologies
+                      </p>
+                    </div>
+
+                    <ul className="tw:grid tw:grid-cols-2 tw:gap-3 tw:sm:grid-cols-3 tw:xl:grid-cols-5">
+                      {group.technologies.map((technology, technologyIndex) => (
+                        <TechnologyMark
+                          key={technology.label}
+                          icon={technology.icon}
+                          label={technology.label}
+                          tilt={technologyIndex % 2 === 0 ? "left" : "right"}
+                        />
+                      ))}
+                    </ul>
+                  </section>
+                </div>
+              ))}
             </div>
           </section>
 
