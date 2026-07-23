@@ -24,6 +24,7 @@
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
+  --color-trust: var(--trust);
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
@@ -75,6 +76,7 @@
   --border: rgb(166 156 142 / 24%);
   --input: rgb(166 156 142 / 32%);
   --ring: var(--noir-primary);
+  --trust: #8bb8b5;
   --chart-1: var(--noir-primary);
   --chart-2: var(--noir-muted);
   --chart-3: var(--noir-accent);
@@ -139,9 +141,63 @@
     @apply tw:border-border tw:outline-ring/50;
   }
   body {
-    @apply tw:bg-background tw:text-foreground;
+    @apply tw:overflow-x-hidden tw:bg-background tw:text-foreground;
   }
   html {
     @apply tw:font-sans;
+  }
+  ::selection {
+    color: var(--primary-foreground);
+    background: var(--primary);
+  }
+  :target {
+    scroll-margin-top: 7rem;
+  }
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+[data-landing-grid] {
+  background-image:
+    linear-gradient(rgb(198 154 59 / 7%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(198 154 59 / 7%) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent 88%);
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
+[data-dossier]::before,
+[data-dossier]::after {
+  position: absolute;
+  z-index: -1;
+  width: 5rem;
+  height: 5rem;
+  content: "";
+  border-color: rgb(198 154 59 / 45%);
+}
+
+[data-dossier]::before {
+  top: 0;
+  left: 0;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+[data-dossier]::after {
+  right: 0;
+  bottom: 0;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+
+[data-vertical-label] {
+  writing-mode: vertical-rl;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
