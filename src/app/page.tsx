@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
-  ArrowDown,
   ArrowUpRight,
   Check,
   Circle,
@@ -37,6 +37,7 @@ import {
   ProcessTrack,
   ScrollProgress,
 } from "@/components/landing/motion";
+import { SiteHeader } from "@/components/landing/site-header";
 import { Badge } from "@/components/base/badge";
 import { buttonVariants } from "@/components/base/button";
 import {
@@ -234,63 +235,7 @@ export default function HomePage() {
       <ArchitectureBackdrop />
 
       <div className="tw:relative tw:z-10 tw:mx-auto tw:flex tw:min-h-screen tw:w-full tw:max-w-7xl tw:flex-col tw:px-4 tw:pb-8 tw:sm:px-6 tw:lg:px-8">
-        <header className="tw:sticky tw:top-4 tw:z-40 tw:mt-4 tw:flex tw:items-center tw:justify-between tw:gap-4 tw:rounded-2xl tw:border tw:glass-surface tw:px-4 tw:py-3 tw:sm:px-5">
-          <a
-            href="#top"
-            aria-label="Mahdi Rashidi, back to the top"
-            className="tw:flex tw:items-center tw:gap-3 tw:rounded-lg tw:outline-none tw:focus-visible:ring-3 tw:focus-visible:ring-ring/35"
-          >
-            <span className="tw:grid tw:size-9 tw:place-items-center tw:rounded-lg tw:border tw:border-primary/35 tw:bg-primary/10 tw:font-mono tw:text-xs tw:font-bold tw:text-primary">
-              MR
-            </span>
-            <span className="tw:hidden tw:flex-col tw:sm:flex">
-              <span className="tw:text-sm tw:font-bold">Mahdi Rashidi</span>
-              <span className="tw:font-mono tw:text-[0.65rem] tw:tracking-[0.16em] tw:text-muted-foreground tw:uppercase">
-                Full-stack developer
-              </span>
-            </span>
-          </a>
-
-          <nav
-            aria-label="Primary navigation"
-            className="tw:hidden tw:items-center tw:gap-6 tw:md:flex"
-          >
-            <a
-              href="#trust"
-              className="tw:rounded-sm tw:text-sm tw:text-muted-foreground tw:transition-colors tw:hover:text-foreground tw:focus-visible:ring-3 tw:focus-visible:ring-ring/35 tw:focus-visible:outline-none"
-            >
-              How I work
-            </a>
-            <a
-              href="#capabilities"
-              className="tw:rounded-sm tw:text-sm tw:text-muted-foreground tw:transition-colors tw:hover:text-foreground tw:focus-visible:ring-3 tw:focus-visible:ring-ring/35 tw:focus-visible:outline-none"
-            >
-              Capabilities
-            </a>
-            <a
-              href="#stack"
-              className="tw:rounded-sm tw:text-sm tw:text-muted-foreground tw:transition-colors tw:hover:text-foreground tw:focus-visible:ring-3 tw:focus-visible:ring-ring/35 tw:focus-visible:outline-none"
-            >
-              Stack
-            </a>
-            <a
-              href="#proof"
-              className="tw:rounded-sm tw:text-sm tw:text-muted-foreground tw:transition-colors tw:hover:text-foreground tw:focus-visible:ring-3 tw:focus-visible:ring-ring/35 tw:focus-visible:outline-none"
-            >
-              Proof
-            </a>
-          </nav>
-
-          <a
-            href={siteConfig.githubUrl}
-            target="_blank"
-            rel="noreferrer"
-            className={buttonVariants({ size: "sm", variant: "outline" })}
-          >
-            GitHub
-            <ArrowUpRight data-icon="inline-end" />
-          </a>
-        </header>
+        <SiteHeader />
 
         <main>
           <section
@@ -333,16 +278,16 @@ export default function HomePage() {
                 delay={0.26}
                 className="tw:flex tw:w-full tw:flex-col tw:gap-3 tw:sm:w-auto tw:sm:flex-row"
               >
-                <a
-                  href="#contact"
+                <Link
+                  href="/contact"
                   className={buttonVariants({
                     size: "lg",
                     className: "tw:w-full tw:sm:w-auto",
                   })}
                 >
                   Discuss a project
-                  <ArrowDown data-icon="inline-end" />
-                </a>
+                  <ArrowUpRight data-icon="inline-end" />
+                </Link>
                 <a
                   href="#trust"
                   className={buttonVariants({
@@ -733,15 +678,10 @@ export default function HomePage() {
                     product plan people can trust and a build that earns that trust.
                   </p>
                   <div className="tw:flex tw:flex-col tw:gap-3 tw:sm:flex-row">
-                    <a
-                      href={siteConfig.githubUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={buttonVariants({ size: "lg" })}
-                    >
-                      Start with my public work
+                    <Link href="/contact" className={buttonVariants({ size: "lg" })}>
+                      Share your project brief
                       <ArrowUpRight data-icon="inline-end" />
-                    </a>
+                    </Link>
                     <a href="#top" className={buttonVariants({ size: "lg", variant: "outline" })}>
                       Back to the brief
                     </a>

@@ -22,6 +22,7 @@ export const siteConfig = {
   shortDescription:
     "Full-stack product development with clear scope, visible progress, and dependable delivery.",
   url: resolveSiteUrl(),
+  contactEmail: "mahdirashidi462@gmail.com",
   githubUrl: "https://github.com/side-26",
   repositoryUrl: "https://github.com/side-26/portfolio-front-app",
 } as const;
