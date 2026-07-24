@@ -29,6 +29,16 @@ or authentication state.
 Import from the concrete file you need. Avoid a barrel import so client code cannot accidentally
 pull server-only modules into its bundle.
 
+## Entity-oriented application layer
+
+`src/lib/api/` is the transport layer, not the domain layer. Put application operations inside
+`src/entities/<entity>/` using injected service factories, entity-owned types or DTOs, and
+colocated tests. Client-side server-state hooks belong to the same entity and should wrap the
+service with TanStack Query.
+
+Follow the complete [Entity API Workflow](./entity-api-workflow.md) whenever creating or changing
+an API client, entity service, query hook, Route Handler, API contract, or related test.
+
 ## Server-side request
 
 Server Components should fetch the actual data source directly instead of making an HTTP request

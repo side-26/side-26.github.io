@@ -1,0 +1,4 @@
+interface:
+  display_name: "Entity API Workflow"
+  short_description: "Build modular entity services and API layers"
+  default_prompt: "Use $entity-api-workflow to create or change a modular entity API with matching tests."

@@ -18,3 +18,10 @@ Before creating, reorganizing, styling, reviewing, or auditing React components,
 Every new or changed API Route Handler must include matching adjacent `*.test.ts` coverage. Update
 the test whenever the API contract or behavior changes, and run `pnpm test` before considering the
 API work complete.
+
+## Entity and API Architecture
+
+Before creating, moving, reviewing, or changing API clients, entity modules, services, DTOs,
+schemas, TanStack Query hooks or keys, Route Handlers, or their tests, use the project-local
+`entity-api-workflow` skill at `.agents/skills/entity-api-workflow/SKILL.md` and follow
+`docs/entity-api-workflow.md`.
