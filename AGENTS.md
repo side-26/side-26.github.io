@@ -12,3 +12,9 @@ Before handling any user request in this repository, use the project-local `pre-
 ## Component Creation
 
 Before creating, reorganizing, styling, reviewing, or auditing React components, use the project-local `component-workflow` skill at `.agents/skills/component-workflow/SKILL.md` and follow `docs/component-workflow.md`. In particular, place all atomic components in `src/components/base/` and apply the glass visual language to components that own visible UI surfaces.
+
+## API Tests
+
+Every new or changed API Route Handler must include matching adjacent `*.test.ts` coverage. Update
+the test whenever the API contract or behavior changes, and run `pnpm test` before considering the
+API work complete.
