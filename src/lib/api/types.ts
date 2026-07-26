@@ -7,6 +7,23 @@ type QueryValue =
 type ApiQuery = Readonly<Record<string, QueryValue>>;
 type ApiResponseType = "arrayBuffer" | "blob" | "json" | "response" | "text";
 
+type ApiFieldMessages = {
+  messages: string[];
+  name: string;
+};
+
+type ApiErrorData = {
+  code: string;
+  messages?: ApiFieldMessages[];
+  [key: string]: unknown;
+};
+
+type ApiErrorResponse<TData extends ApiErrorData = ApiErrorData> = {
+  data: TData;
+  id: string;
+  message: string;
+};
+
 type ApiNextOptions = {
   revalidate?: false | number;
   tags?: string[];
@@ -69,7 +86,10 @@ type ApiErrorCallback = (error: ApiError) => MaybePromise<void>;
 export type {
   ApiClient,
   ApiClientConfig,
+  ApiErrorData,
   ApiErrorCallback,
+  ApiErrorResponse,
+  ApiFieldMessages,
   ApiNextOptions,
   ApiQuery,
   ApiRequestOptions,

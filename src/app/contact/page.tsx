@@ -46,8 +46,9 @@ const contactSteps = [
     description: "Use email, phone, Telegram, or Instagram—whichever is easiest for you.",
   },
   {
-    title: "Review before anything leaves",
-    description: "Your email app opens with the brief prepared. You stay in control of sending it.",
+    title: "Send only when you are ready",
+    description:
+      "Nothing leaves until you choose Send project brief. A delivery receipt confirms the handoff.",
   },
 ] as const;
 

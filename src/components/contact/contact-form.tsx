@@ -4,7 +4,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { AtSign, Mail, Phone, Send } from "lucide-react";
 import { useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
-import * as yup from "yup";
 
 import { Button } from "@/components/base/button";
 import {
@@ -20,7 +19,14 @@ import { FormSelectField } from "@/components/base/field/select/form-field";
 import { FormTextField } from "@/components/base/field/text/form-field";
 import { FormTextareaField } from "@/components/base/field/textarea/form-field";
 import { BaseForm } from "@/components/base/form";
-import { siteConfig } from "@/lib/site";
+import { ContactFormResult } from "@/components/contact/contact-form-result";
+import { contactMessageSchema } from "@/entities/contact-message/contact-message.schema";
+import { createContactMessageService } from "@/entities/contact-message/contact-message.service";
+import type {
+  ContactMessageInput,
+  ContactMethod,
+} from "@/entities/contact-message/contact-message.types";
+import { browserApi } from "@/lib/api/browser";
 
 const contactMethods = [
   {
@@ -32,7 +38,6 @@ const contactMethods = [
     type: "email",
     inputMode: "email",
     autoComplete: "email",
-    validationMessage: "Enter a valid email address.",
   },
   {
     value: "phoneNumber",
@@ -43,7 +48,6 @@ const contactMethods = [
     type: "tel",
     inputMode: "tel",
     autoComplete: "tel",
-    validationMessage: "Enter a valid phone number, including the country code.",
   },
   {
     value: "telegram",
@@ -54,7 +58,6 @@ const contactMethods = [
     type: "url",
     inputMode: "url",
     autoComplete: "url",
-    validationMessage: "Enter a full Telegram profile URL, such as https://t.me/username.",
   },
   {
     value: "instagram",
@@ -65,85 +68,17 @@ const contactMethods = [
     type: "url",
     inputMode: "url",
     autoComplete: "url",
-    validationMessage:
-      "Enter a full Instagram profile URL, such as https://instagram.com/username.",
   },
 ] as const;
 
-type ContactMethod = (typeof contactMethods)[number]["value"];
+type ContactFormValues = ContactMessageInput;
 
-type ContactFormValues = {
-  contactMethod: ContactMethod;
-  contactValue: string;
-  fullName: string;
-  jobTitle: string;
-  projectSummary: string;
-};
+type SubmissionResult =
+  | { status: "idle" }
+  | { status: "success"; channel: ContactMethod }
+  | { status: "error"; message: string };
 
-const contactMethodValues = contactMethods.map((method) => method.value);
-
-function isSupportedProfileUrl(value: string, hosts: readonly string[]) {
-  try {
-    const url = new URL(value);
-    const hostname = url.hostname.replace(/^www\./, "");
-
-    return url.protocol === "https:" && hosts.includes(hostname) && url.pathname.length > 1;
-  } catch {
-    return false;
-  }
-}
-
-function isValidContactValue(value: string, method: ContactMethod) {
-  switch (method) {
-    case "email":
-      return yup.string().email().isValidSync(value);
-    case "phoneNumber":
-      return /^\+?[0-9][0-9\s().-]{6,19}$/.test(value);
-    case "telegram":
-      return isSupportedProfileUrl(value, ["t.me", "telegram.me"]);
-    case "instagram":
-      return isSupportedProfileUrl(value, ["instagram.com"]);
-  }
-}
-
-const contactSchema: yup.ObjectSchema<ContactFormValues> = yup.object({
-  fullName: yup
-    .string()
-    .trim()
-    .required("Enter your full name.")
-    .min(2, "Your name should contain at least 2 characters.")
-    .max(80, "Keep your name under 80 characters."),
-  jobTitle: yup
-    .string()
-    .trim()
-    .required("Tell me your role or job title.")
-    .min(2, "Your role should contain at least 2 characters.")
-    .max(100, "Keep your role under 100 characters."),
-  projectSummary: yup
-    .string()
-    .trim()
-    .required("Add a short summary of the project.")
-    .min(40, "Share at least 40 characters so I have enough context.")
-    .max(1200, "Keep the project summary under 1,200 characters."),
-  contactMethod: yup
-    .mixed<ContactMethod>()
-    .oneOf(contactMethodValues)
-    .required("Choose how you would like me to reply."),
-  contactValue: yup
-    .string()
-    .trim()
-    .required("Add the contact detail where I should reply.")
-    .test("contact-format", function validateContactValue(value) {
-      const method = (this.parent as ContactFormValues).contactMethod;
-      const methodConfig = contactMethods.find((item) => item.value === method);
-
-      if (!value || !methodConfig || isValidContactValue(value, method)) {
-        return true;
-      }
-
-      return this.createError({ message: methodConfig.validationMessage });
-    }),
-});
+const contactMessageService = createContactMessageService(browserApi);
 
 function ContactFields() {
   const { clearErrors, control, setValue } = useFormContext<ContactFormValues>();
@@ -227,33 +162,19 @@ function ContactFields() {
 }
 
 function ContactForm() {
-  const [isDraftPrepared, setIsDraftPrepared] = useState(false);
+  const [submissionResult, setSubmissionResult] = useState<SubmissionResult>({
+    status: "idle",
+  });
 
-  function handleSubmit(values: ContactFormValues) {
-    const selectedMethod = contactMethods.find((method) => method.value === values.contactMethod);
-    const subject = `Project inquiry from ${values.fullName}: ${values.jobTitle}`;
-    const body = [
-      "Hello Mahdi,",
-      "",
-      "I would like to discuss a project.",
-      "",
-      `Name: ${values.fullName}`,
-      `Role: ${values.jobTitle}`,
-      `Preferred reply method: ${selectedMethod?.label ?? values.contactMethod}`,
-      `Contact detail: ${values.contactValue}`,
-      "",
-      "Project summary:",
-      values.projectSummary,
-    ].join("\n");
-    const query = new URLSearchParams({ subject, body });
-
-    setIsDraftPrepared(true);
-    window.location.href = `mailto:${siteConfig.contactEmail}?${query.toString()}`;
+  async function handleSubmit(values: ContactFormValues) {
+    setSubmissionResult({ status: "idle" });
+    const result = await contactMessageService.send(values);
+    setSubmissionResult({ status: "success", channel: result.channel });
   }
 
   return (
     <BaseForm<ContactFormValues>
-      resolver={yupResolver(contactSchema)}
+      resolver={yupResolver(contactMessageSchema)}
       formOptions={{
         defaultValues: {
           fullName: "",
@@ -267,30 +188,39 @@ function ContactForm() {
       }}
       errorSummaryTitle="A few details need your attention"
       onSubmit={handleSubmit}
+      onSubmitError={(error) => {
+        setSubmissionResult({ status: "error", message: error.message });
+      }}
     >
-      <Card>
-        <CardHeader>
-          <CardTitle className="tw:text-xl tw:font-bold">Your project brief</CardTitle>
-          <CardDescription className="tw:max-w-xl tw:leading-6">
-            Give me enough context to make the first reply useful. Your email application will open
-            with everything prepared for you to review.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ContactFields />
-        </CardContent>
-        <CardFooter className="tw:flex-col tw:items-stretch tw:gap-3 tw:sm:flex-row tw:sm:items-center tw:sm:justify-between">
-          <p role="status" aria-live="polite" className="tw:text-sm tw:text-muted-foreground">
-            {isDraftPrepared
-              ? "Your email draft is ready. Review it, then send when you are comfortable."
-              : "Nothing is sent until you review the email draft."}
-          </p>
-          <Button type="submit" size="lg" className="tw:w-full tw:sm:w-auto">
-            Open email draft
-            <Send data-icon="inline-end" />
-          </Button>
-        </CardFooter>
-      </Card>
+      {({ formState }) => (
+        <Card>
+          <CardHeader>
+            <CardTitle className="tw:text-xl tw:font-bold">Your project brief</CardTitle>
+            <CardDescription className="tw:max-w-xl tw:leading-6">
+              Give me enough context to make the first reply useful. I’ll send it securely and reply
+              through the channel you choose.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ContactFields />
+          </CardContent>
+          <CardFooter className="tw:grid tw:items-center tw:gap-4 tw:border-t tw:border-border/60 tw:pt-5 tw:sm:grid-cols-[1fr_auto]">
+            <ContactFormResult
+              {...(formState.isSubmitting ? { status: "sending" as const } : submissionResult)}
+            />
+            <Button
+              type="submit"
+              size="lg"
+              className="tw:w-full tw:sm:w-auto"
+              isLoading={formState.isSubmitting}
+              loadingText="Sending brief…"
+            >
+              Send project brief
+              <Send data-icon="inline-end" />
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
     </BaseForm>
   );
 }

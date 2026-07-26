@@ -2,22 +2,26 @@
 
 ## Endpoint
 
-`POST /api/contact/messages`
+`POST /api/contact/message`
 
-This is a protected server-to-server endpoint. The contact page does not call it. A future trusted
-server integration can submit the existing contact-form payload and the endpoint will forward it
-to the fixed webhook configured for the selected channel.
+The contact page submits its validated form data to this endpoint. The endpoint sends one
+server-side email to the portfolio inbox through Nodemailer and Gmail SMTP. The visitor’s selected
+contact method is included as the preferred reply channel.
 
 ## Authentication
 
-Send the private API key as a bearer token:
+Same-origin browser requests are accepted when their `Origin` matches
+`CONTACT_FORM_ALLOWED_ORIGIN`. In local environments where that variable is omitted, the request
+URL origin is used.
+
+Trusted server callers can instead send the optional private API key as a bearer token:
 
 ```http
 Authorization: Bearer <CONTACT_MESSAGE_API_KEY>
 ```
 
-Keep this value on the server. Do not expose it through a `NEXT_PUBLIC_` environment variable or
-call this endpoint directly from browser code.
+Keep this value on the server. Do not expose it through a `NEXT_PUBLIC_` environment variable.
+Gmail credentials are always server-only.
 
 ## Request
 
@@ -43,7 +47,7 @@ Supported `contactMethod` values:
 
 ## Successful response
 
-The API returns `202 Accepted` after the selected webhook accepts the request:
+The API returns `202 Accepted` after Gmail SMTP accepts the email:
 
 ```json
 {
@@ -59,17 +63,17 @@ The `x-request-id` response header contains the same identifier.
 
 ## Delivery
 
-Each channel maps to a fixed HTTPS webhook:
+The Route Handler calls an entity-owned Nodemailer transport configured with Gmail SMTP.
+Configure:
 
-- `CONTACT_EMAIL_WEBHOOK_URL`
-- `CONTACT_PHONE_WEBHOOK_URL`
-- `CONTACT_TELEGRAM_WEBHOOK_URL`
-- `CONTACT_INSTAGRAM_WEBHOOK_URL`
+- `SMTP_USER` with the Gmail account that sends and receives portfolio briefs
+- `SMTP_APP_PASSWORD` with a dedicated Google App Password, never the normal account password
+- `CONTACT_RECIPIENT_EMAIL` to override the portfolio’s configured contact email
 
-If `CONTACT_MESSAGE_WEBHOOK_TOKEN` is configured, it is sent to the webhook as a bearer token.
-Webhook URLs and provider responses are never returned to the caller.
-
-The outgoing event name is `contact.message.created` and its version is `1`.
+The message includes the visitor’s name, role, project summary, preferred reply method, contact
+detail, and request ID. Email submissions also set `replyTo` to the visitor’s validated email.
+The request ID is included as an email header for traceability. SMTP responses and credentials are
+never returned to the caller.
 
 ## Errors
 
@@ -77,28 +81,43 @@ Errors use this envelope:
 
 ```json
 {
-  "error": {
+  "id": "generated-request-id",
+  "message": "The request payload is invalid.",
+  "data": {
     "code": "VALIDATION_ERROR",
-    "message": "The request payload is invalid.",
-    "requestId": "generated-request-id"
+    "messages": [
+      {
+        "name": "contactValue",
+        "messages": ["Use a full Telegram profile URL, such as https://t.me/username."]
+      }
+    ]
   }
 }
 ```
 
+The same ID is returned in the `x-request-id` header. Non-validation failures omit
+`data.messages` and keep their public error code in `data.code`.
+
 Expected statuses include:
 
-- `401` for invalid or missing API credentials
+- `403` when neither a trusted bearer token nor a verified same-origin request is present
 - `413` for an oversized body
 - `415` for a non-JSON request
 - `422` for invalid contact data
-- `502` when webhook delivery fails
-- `503` when the API or selected channel is not configured
+- `502` when Gmail SMTP rejects delivery with an unknown failure
+- `503` when `SMTP_USER` or `SMTP_APP_PASSWORD` is not configured
+- `503` with `DELIVERY_CONFIGURATION_ERROR` when Gmail rejects authentication
+- `503` with `DELIVERY_TEMPORARILY_UNAVAILABLE` for temporary SMTP connection failures
 
 ## Tests
 
-The adjacent `route.test.ts` covers authentication, content type and payload limits,
-method-specific validation, all four webhook mappings, response headers, provider authorization,
-missing configuration, provider errors, and network failures.
+The adjacent `route.test.ts` covers same-origin enforcement, trusted bearer access, content type
+and payload limits, all four reply methods, Gmail configuration, missing credentials,
+authentication errors, temporary connection failures, and safe unknown failures. The entity
+mailer tests verify the SMTP transport configuration and complete email envelope, while the entity
+service test verifies the browser request path, request body, cache policy, and error propagation.
+Shared route-handler and fetch-client tests cover the error envelope, validation-message mapping,
+safe unknown failures, and client normalization.
 
 Run:
 

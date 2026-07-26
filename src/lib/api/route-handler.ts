@@ -1,10 +1,4 @@
-type ApiProblem = {
-  error: {
-    code: string;
-    message: string;
-    requestId?: string;
-  };
-};
+import type { ApiErrorData, ApiErrorResponse, ApiFieldMessages } from "./types.ts";
 
 type ApiSuccess<TData> = {
   data: TData;
@@ -19,14 +13,20 @@ type ErrorResponseOptions = {
   requestId?: string;
 };
 
+type ApiRouteErrorOptions = ErrorOptions & {
+  data?: Omit<ApiErrorData, "code">;
+};
+
 class ApiRouteError extends Error {
   readonly code: string;
+  readonly data?: Omit<ApiErrorData, "code">;
   readonly status: number;
 
-  constructor(status: number, code: string, message: string, options?: ErrorOptions) {
+  constructor(status: number, code: string, message: string, options?: ApiRouteErrorOptions) {
     super(message, options);
     this.name = "ApiRouteError";
     this.code = code;
+    this.data = options?.data;
     this.status = status;
   }
 }
@@ -41,29 +41,68 @@ function apiSuccess<TData>(data: TData, init?: ResponseInit) {
 
 function apiError(error: unknown, options: ErrorResponseOptions = {}) {
   options.onError?.(error);
+  const requestId = options.requestId ?? createRequestId();
   const routeError =
     error instanceof ApiRouteError
       ? error
       : new ApiRouteError(500, "INTERNAL_ERROR", "An unexpected server error occurred.");
   const headers = new Headers({ "cache-control": "no-store" });
 
-  if (options.requestId) {
-    headers.set("x-request-id", options.requestId);
-  }
+  headers.set("x-request-id", requestId);
 
   return Response.json(
     {
-      error: {
+      data: {
         code: routeError.code,
-        message: routeError.message,
-        requestId: options.requestId,
+        ...routeError.data,
       },
-    } satisfies ApiProblem,
+      id: requestId,
+      message: routeError.message,
+    } satisfies ApiErrorResponse,
     {
       headers,
       status: routeError.status,
     },
   );
+}
+
+function getValidationMessages(error: unknown): ApiFieldMessages[] {
+  if (!error || typeof error !== "object") {
+    return [];
+  }
+
+  const validationError = error as {
+    inner?: unknown;
+    message?: unknown;
+    path?: unknown;
+  };
+  const candidates = Array.isArray(validationError.inner)
+    ? validationError.inner
+    : [validationError];
+  const messagesByName = new Map<string, Set<string>>();
+
+  for (const candidate of candidates) {
+    if (!candidate || typeof candidate !== "object") {
+      continue;
+    }
+
+    const issue = candidate as { message?: unknown; path?: unknown };
+    const name = typeof issue.path === "string" ? issue.path.trim() : "";
+    const message = typeof issue.message === "string" ? issue.message.trim() : "";
+
+    if (!name || !message) {
+      continue;
+    }
+
+    const messages = messagesByName.get(name) ?? new Set<string>();
+    messages.add(message);
+    messagesByName.set(name, messages);
+  }
+
+  return [...messagesByName].map(([name, messages]) => ({
+    messages: [...messages],
+    name,
+  }));
 }
 
 async function readBodyWithLimit(request: Request, maxBytes: number) {
@@ -133,8 +172,11 @@ async function parseJsonRequest<TData>(
       throw cause;
     }
 
+    const messages = getValidationMessages(cause);
+
     throw new ApiRouteError(422, "VALIDATION_ERROR", "The request payload is invalid.", {
       cause,
+      data: messages.length > 0 ? { messages } : undefined,
     });
   }
 }
@@ -144,7 +186,8 @@ export {
   apiError,
   apiSuccess,
   createRequestId,
+  getValidationMessages,
   parseJsonRequest,
-  type ApiProblem,
+  type ApiRouteErrorOptions,
   type ApiSuccess,
 };

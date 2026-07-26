@@ -126,6 +126,34 @@ export async function POST(request: Request) {
 requires an explicit validation function. `apiError` returns known public errors but replaces
 unknown failures with a generic 500 response.
 
+Every failed Route Handler response uses the same contract:
+
+```json
+{
+  "id": "generated-request-id",
+  "message": "The request payload is invalid.",
+  "data": {
+    "code": "VALIDATION_ERROR",
+    "messages": [
+      {
+        "name": "email",
+        "messages": ["Enter a valid email address."]
+      }
+    ]
+  }
+}
+```
+
+`id` also appears in the `x-request-id` response header. `data.code` is always present.
+`data.messages` is optional and groups one or more public validation messages by form-field name.
+An `ApiRouteError` can add other public metadata through its `data` option.
+
+The fetch client validates this envelope before converting it to `ApiError`. It exposes the public
+`message`, identifier, and typed `data`, but does not pass an unstructured error body to UI code.
+`BaseForm` automatically applies `data.messages` to React Hook Form fields. For non-field failures,
+forms can use `onSubmitError` to display `error.message`; components should not translate HTTP
+statuses or API error codes.
+
 ## Operational rules
 
 - Keep tokens and private upstream URLs in server-only variables.

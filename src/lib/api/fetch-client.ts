@@ -1,4 +1,4 @@
-import { ApiError, isApiError } from "@/lib/api/errors";
+import { ApiError, isApiError, isApiErrorResponse } from "./errors.ts";
 import type {
   ApiClient,
   ApiClientConfig,
@@ -6,7 +6,7 @@ import type {
   ApiRequestOptions,
   ApiResponseType,
   ApiRetryOptions,
-} from "@/lib/api/types";
+} from "./types.ts";
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 const DEFAULT_RETRY_OPTIONS: ApiRetryOptions = {
@@ -381,16 +381,22 @@ function createApiClient(config: ApiClientConfig): ApiClient {
         response = await fetchImplementation(url, init);
 
         if (!response.ok) {
-          throw new ApiError(`API request failed with status ${response.status}.`, {
-            code: "HTTP_ERROR",
-            data: await readErrorPayload(response.clone()),
-            method,
-            requestId: response.headers.get("x-request-id") ?? undefined,
-            retryable: retryOptions.statuses.includes(response.status),
-            status: response.status,
-            statusText: response.statusText,
-            url: safeUrl,
-          });
+          const errorPayload = await readErrorPayload(response.clone());
+          const problem = isApiErrorResponse(errorPayload) ? errorPayload : undefined;
+
+          throw new ApiError(
+            problem?.message ?? "The server could not complete the request. Please try again.",
+            {
+              code: "HTTP_ERROR",
+              data: problem?.data,
+              method,
+              requestId: problem?.id ?? response.headers.get("x-request-id") ?? undefined,
+              retryable: retryOptions.statuses.includes(response.status),
+              status: response.status,
+              statusText: response.statusText,
+              url: safeUrl,
+            },
+          );
         }
 
         return await parseResponse<TResponse>(response, responseType);
@@ -400,7 +406,7 @@ function createApiClient(config: ApiClientConfig): ApiClient {
         if (isApiError(cause)) {
           error = cause;
         } else if (attemptSignal.didTimeOut()) {
-          error = new ApiError("The API request timed out.", {
+          error = new ApiError("The request took too long. Check your connection and try again.", {
             cause,
             code: "TIMEOUT",
             method,
@@ -408,20 +414,23 @@ function createApiClient(config: ApiClientConfig): ApiClient {
             url: safeUrl,
           });
         } else if (externalSignal?.aborted) {
-          error = new ApiError("The API request was cancelled.", {
+          error = new ApiError("The request was cancelled.", {
             cause,
             code: "ABORTED",
             method,
             url: safeUrl,
           });
         } else {
-          error = new ApiError("The API request could not reach the server.", {
-            cause,
-            code: "NETWORK_ERROR",
-            method,
-            retryable: true,
-            url: safeUrl,
-          });
+          error = new ApiError(
+            "The server could not be reached. Check your connection and try again.",
+            {
+              cause,
+              code: "NETWORK_ERROR",
+              method,
+              retryable: true,
+              url: safeUrl,
+            },
+          );
         }
 
         if (attempt >= retryOptions.attempts || !shouldRetry(error, retryOptions)) {

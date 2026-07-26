@@ -11,6 +11,7 @@ import {
   type FieldErrors,
   type FieldValues,
   FormProvider,
+  type Path,
   type Resolver,
   type SubmitErrorHandler,
   type SubmitHandler,
@@ -21,6 +22,8 @@ import {
   useFormContext,
   useFormState,
 } from "react-hook-form";
+
+import { getApiFieldMessages, isApiError, type ApiError } from "@/lib/api/errors";
 
 type BaseFormHandle<TFieldValues extends FieldValues = FieldValues> = {
   setError: UseFormSetError<TFieldValues>;
@@ -37,6 +40,7 @@ type BaseFormProps<
   formOptions?: Omit<UseFormProps<TFieldValues, TContext, TTransformedValues>, "resolver">;
   onInvalidSubmit?: SubmitErrorHandler<TFieldValues>;
   onSubmit: SubmitHandler<TTransformedValues>;
+  onSubmitError?: (error: ApiError) => Promise<void> | void;
   ref?: Ref<BaseFormHandle<TFieldValues>>;
   resolver?: Resolver<TFieldValues, TContext, TTransformedValues>;
   showErrorSummary?: boolean;
@@ -133,6 +137,7 @@ function BaseForm<
   noValidate = true,
   onInvalidSubmit,
   onSubmit,
+  onSubmitError,
   ref,
   resolver,
   showErrorSummary = true,
@@ -145,13 +150,53 @@ function BaseForm<
 
   useImperativeHandle(ref, () => ({ setError: form.setError }), [form.setError]);
 
+  const handleSubmit: SubmitHandler<TTransformedValues> = async (values, event) => {
+    try {
+      await onSubmit(values, event);
+    } catch (error) {
+      if (!isApiError(error)) {
+        throw error;
+      }
+
+      const fieldMessages = getApiFieldMessages(error);
+
+      if (fieldMessages.length > 0) {
+        fieldMessages.forEach(({ messages, name }, index) => {
+          form.setError(
+            name as Path<TFieldValues>,
+            {
+              message: messages[0],
+              type: "server",
+              types: Object.fromEntries(
+                messages.map((message, messageIndex) => [`server.${messageIndex}`, message]),
+              ),
+            },
+            { shouldFocus: index === 0 },
+          );
+        });
+
+        return;
+      }
+
+      if (onSubmitError) {
+        await onSubmitError(error);
+        return;
+      }
+
+      form.setError("root.server", {
+        message: error.message,
+        type: "server",
+      });
+    }
+  };
+
   return (
     <FormProvider {...form}>
       <form
         {...formProps}
         data-slot="base-form"
         noValidate={noValidate}
-        onSubmit={form.handleSubmit(onSubmit, onInvalidSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit, onInvalidSubmit)}
       >
         {showErrorSummary ? <BaseFormErrorSummary title={errorSummaryTitle} /> : null}
         {typeof children === "function" ? children(form) : children}
