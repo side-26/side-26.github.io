@@ -38,6 +38,7 @@ import {
   ScrollProgress,
 } from "@/components/landing/motion";
 import { SiteHeader } from "@/components/landing/site-header";
+import { CareerExperienceItem } from "@/components/landing/career-experience-item";
 import { Badge } from "@/components/base/badge";
 import { buttonVariants } from "@/components/base/button";
 import {
@@ -170,6 +171,28 @@ const deliverySteps = [
     title: "Release with context",
     description:
       "Verify the product, document what matters, and leave the next owner a clear path forward.",
+  },
+] as const;
+
+// Replace these placeholders with the real company names, dates, roles, descriptions, and marks.
+const careerExperiences = [
+  {
+    company: "Company name",
+    from: "20XX",
+    to: "Present",
+    jobTitle: "Your most recent job title",
+    description:
+      "Describe what you owned, the kind of product you helped build, and the concrete difference your work made for the team or its users.",
+    logo: "CO",
+  },
+  {
+    company: "Previous company",
+    from: "20XX",
+    to: "20XX",
+    jobTitle: "Your previous job title",
+    description:
+      "Summarize the scope of the role, the systems or experiences you improved, and the strongest outcome that belongs in your career story.",
+    logo: "PC",
   },
 ] as const;
 
@@ -480,6 +503,37 @@ export default function HomePage() {
                   </MotionReveal>
                 );
               })}
+            </div>
+          </section>
+
+          <section
+            id="experience"
+            aria-labelledby="experience-title"
+            className="tw:py-24 tw:sm:py-32"
+          >
+            <MotionReveal>
+              <SectionHeading
+                id="experience-title"
+                eyebrow="Career experience"
+                title="The roles behind the product thinking."
+                description="A concise record of where I worked, what I was trusted to own, and how each role shaped the way I build dependable products today."
+              />
+            </MotionReveal>
+
+            <div className="tw:relative tw:mt-14">
+              <div
+                aria-hidden="true"
+                className="tw:absolute tw:start-[1.35rem] tw:top-8 tw:bottom-8 tw:w-px tw:bg-[linear-gradient(to_bottom,var(--primary),var(--border)_35%,var(--border)_75%,transparent)] tw:sm:start-[1.72rem]"
+              />
+              <ol className="tw:flex tw:flex-col tw:gap-6">
+                {careerExperiences.map((experience, index) => (
+                  <li key={`${experience.company}-${experience.jobTitle}`}>
+                    <MotionReveal delay={index * 0.08} distance={20}>
+                      <CareerExperienceItem {...experience} index={index} />
+                    </MotionReveal>
+                  </li>
+                ))}
+              </ol>
             </div>
           </section>
 

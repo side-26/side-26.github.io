@@ -8,6 +8,7 @@ import { siteConfig } from "@/lib/site";
 const navigationItems = [
   { href: "/#trust", label: "How I work" },
   { href: "/#capabilities", label: "Capabilities" },
+  { href: "/#experience", label: "Experience" },
   { href: "/#stack", label: "Stack" },
   { href: "/#proof", label: "Proof" },
 ] as const;
