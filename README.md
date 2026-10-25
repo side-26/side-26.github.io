@@ -1,17 +1,60 @@
 # Mahdi Rashidi Portfolio
 
-A responsive, accessible personal portfolio for Mahdi Rashidi, built as a static Next.js application and published with GitHub Pages.
+A personal portfolio for **Mahdi Rashidi**, a full-stack developer. The site presents selected experience, technical strengths, delivery approach, and a contact path for prospective collaborators and employers.
 
-## Technology stack
+It is intentionally a focused product rather than a generic template: the content, case-study style career timeline, motion, visual language, and contact flow are designed to communicate how Mahdi approaches dependable web-product delivery.
 
-- Next.js 16 (App Router) and React 19
-- TypeScript, Tailwind CSS, and Framer Motion
-- pnpm 11 and Node.js 22
-- GitHub Actions and GitHub Pages for static hosting
+**Live site:** [side-26.github.io](https://side-26.github.io/)
+
+## What the site includes
+
+- Responsive landing page for mobile, tablet, and desktop
+- Career timeline with responsibilities, outcomes, and technology stacks
+- Capability, process, and technical-stack sections
+- Local-font loading, Open Graph image generation, sitemap, manifest, and robots metadata
+- Purposeful motion with reduced-motion support
+- Accessible contact form with client-side validation and clear error states
+- Static deployment to GitHub Pages through GitHub Actions
+
+## Technology
+
+- **Framework:** Next.js 16, App Router, React 19
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS 4, semantic design tokens, glass-surface UI language
+- **Forms:** React Hook Form and Yup
+- **Motion:** Framer Motion
+- **Icons:** Lucide and Simple Icons
+- **Tooling:** pnpm 11, ESLint, Prettier, Node.js 22
+- **Hosting:** GitHub Pages and GitHub Actions
+
+## Architecture
+
+The project stays deliberately lightweight while keeping clear ownership boundaries:
+
+```text
+src/
+├── app/                    # Routes, layout, metadata, static route handlers
+├── components/
+│   ├── base/               # Reusable UI primitives (Card, Button, fields, Badge)
+│   ├── contact/            # Contact form composition and feedback UI
+│   ├── global/             # App-wide providers
+│   └── landing/            # Portfolio-specific sections and motion
+├── entities/               # Domain types, schemas, and services
+├── lib/                    # Shared utilities, site configuration, API transport
+├── server/                 # Server-only code excluded from the static export
+└── assets/                 # Local fonts
+```
+
+The homepage composes portfolio-specific sections from reusable base components. It is intentionally kept in one route while the portfolio remains small; larger independently maintained sections can be extracted later without changing the shared primitives.
 
 ## Local development
 
-Requirements: Node.js 22 and pnpm 11 (the exact pnpm version is pinned in `package.json`).
+### Requirements
+
+- Node.js 22
+- pnpm 11 (pinned in `package.json`)
+
+### Start the app
 
 ```bash
 git clone https://github.com/side-26/chief2001.github.io.git
@@ -22,41 +65,58 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Copy `.env.example` to `.env.local` when setting values locally. `NEXT_PUBLIC_SITE_URL` controls the canonical URL, sitemap, and social metadata. Do not expose SMTP credentials or API keys in `NEXT_PUBLIC_*` variables.
+Copy `.env.example` to `.env.local` if you need local configuration. Never commit real credentials or expose secrets through `NEXT_PUBLIC_*` variables.
 
-## Production build
+## Useful commands
 
-```bash
-pnpm lint
-pnpm test
-pnpm build
-```
+| Command                   | Purpose                                      |
+| ------------------------- | -------------------------------------------- |
+| `pnpm dev`                | Start the local development server           |
+| `pnpm lint`               | Run ESLint                                   |
+| `pnpm format:check`       | Check formatting with Prettier               |
+| `pnpm format`             | Format the repository with Prettier          |
+| `pnpm build -- --webpack` | Create the verified static production export |
 
-`pnpm build` runs Next.js static export and writes the deployable site to `out/`. The exported routes use trailing slashes, so GitHub Pages serves `/contact/` as `out/contact/index.html`.
+The production export is written to `out/`. It uses trailing-slash routes, so the contact page is exported as `out/contact/index.html`.
 
-## GitHub Pages deployment
+## Configuration
 
-The workflow at `.github/workflows/deploy.yml` runs on pushes to `main` and can also be started manually from the Actions tab. It installs the locked pnpm dependencies, runs the verified webpack production build into `out/`, uploads it as a Pages artifact, and deploys it with GitHub’s Pages deployment action.
+| Variable                           | Purpose                                                       |
+| ---------------------------------- | ------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`             | Canonical site URL used for SEO, sitemap, and social metadata |
+| `NEXT_PUBLIC_CONTACT_API_BASE_URL` | Public base URL for the separately hosted contact API         |
+| `SMTP_USER`, `SMTP_APP_PASSWORD`   | Server-only SMTP credentials for the external contact service |
+| `CONTACT_RECIPIENT_EMAIL`          | Server-only destination address for contact submissions       |
 
-In the GitHub repository:
+## Contact delivery
 
-1. Open **Settings → Pages**.
-2. Set **Source** to **GitHub Actions**.
-3. Push or merge this configuration into `main`, or run **Deploy GitHub Pages** manually.
-4. Optionally set the `CONTACT_API_BASE_URL` Actions variable to the public base URL of the separately hosted contact API. For example, `https://api.example.com` makes the form call `https://api.example.com/contact/message`.
+GitHub Pages only serves static files, so it cannot run the original SMTP `POST /api/contact/message` endpoint. The delivery handler is preserved in `src/server/contact-message/handler.ts` for deployment to a server-capable backend such as a Node service, serverless function, or Cloudflare Worker.
 
-Because this repository is named `chief2001.github.io`, it is a user site rather than a project site. It is deployed from the domain root, with no `basePath` or `assetPrefix`. The expected production URL is:
+To enable production contact submissions:
 
-```text
-https://side-26.github.io/
-```
+1. Deploy an API that implements `POST /contact/message` and preserves the existing JSON contract.
+2. Configure SMTP credentials only on that backend.
+3. Allow the portfolio origin with CORS.
+4. Set `CONTACT_API_BASE_URL` as a GitHub Actions repository variable.
 
-## Contact delivery and static-hosting limits
+Without the variable, the form remains available and validates input locally, then explains that delivery is not configured instead of sending a broken request.
 
-GitHub Pages hosts only static files. The former Next.js `POST /api/contact/message` SMTP handler has therefore been retained as server-only source in `src/server/contact-message/handler.ts`; it is not included in the static export. To enable submissions in production, deploy that handler behind a server-capable platform (for example, a small Next.js/Node service, Cloudflare Worker, or serverless function), configure SMTP secrets there, allow `https://side-26.github.io` via CORS, and set the `CONTACT_API_BASE_URL` Actions variable. The endpoint must preserve the existing `POST /contact/message` JSON contract.
+## Deployment
 
-Without that variable, the contact form stays visible and validates inputs locally, but reports that delivery is not configured rather than attempting a broken request. GitHub Pages also cannot provide server-side rendering, Server Actions, request-aware API routes, secret environment variables, or on-demand Next.js image optimization. Images are exported as unoptimized static files; they retain explicit dimensions to avoid layout shift.
+GitHub Actions builds and deploys the static site using [deploy.yml](.github/workflows/deploy.yml). The workflow runs on pushes to `master` and can be triggered manually.
+
+Before the first deployment:
+
+1. Go to **Repository Settings → Pages**.
+2. Select **GitHub Actions** as the Pages source.
+3. Push to `master` or run **Deploy GitHub Pages** from the Actions tab.
+
+This is a GitHub Pages **user site** (`chief2001.github.io`), so it is served from the domain root without a `basePath` or `assetPrefix`.
 
 ## Optional custom domain
 
-Add the custom domain in **Settings → Pages**, then configure its DNS records with your domain provider as GitHub instructs. Set `NEXT_PUBLIC_SITE_URL` in the workflow (or update its build environment) to the final `https://your-domain.example` value before deploying so canonical URLs, sitemap entries, and Open Graph metadata use the custom domain. GitHub Pages will create or honor the required `CNAME` file.
+Set the custom domain in **Repository Settings → Pages**, then configure the required DNS records with your provider. Update `NEXT_PUBLIC_SITE_URL` in the deployment environment to the final `https://your-domain.example` URL so canonical URLs, sitemap entries, and social metadata remain correct.
+
+## Static-hosting limitations
+
+GitHub Pages does not provide server-side rendering, Server Actions, request-aware API routes, secret runtime environment variables, or Next.js on-demand image optimization. This project uses static export and unoptimized local images to remain compatible with that hosting model.
