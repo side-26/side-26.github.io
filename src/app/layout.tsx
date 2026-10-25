@@ -67,6 +67,8 @@ export const metadata: Metadata = {
     "TypeScript developer",
     "web application development",
     "accessible web development",
+    "مهدی رشیدی",
+    "ایران",
     "SEO-focused development",
   ],
   alternates: {
