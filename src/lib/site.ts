@@ -1,5 +1,7 @@
 const localUrl = "http://localhost:3000";
 
+export const isContactRouteEnabled = process.env.NODE_ENV === "development";
+
 function resolveSiteUrl() {
   const configuredUrl =
     process.env.NEXT_PUBLIC_SITE_URL ??
