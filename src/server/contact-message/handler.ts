@@ -6,19 +6,19 @@ import {
   apiSuccess,
   createRequestId as createApiRequestId,
   parseJsonRequest,
-} from "../../../../lib/api/route-handler.ts";
+} from "../../lib/api/route-handler.ts";
 import {
   createGmailContactMessageMailer,
   type ContactMessageMailer,
   type GmailContactMessageMailerConfiguration,
-} from "../../../../entities/contact-message/contact-message.mailer.ts";
-import { contactMessageSchema } from "../../../../entities/contact-message/contact-message.schema.ts";
+} from "../../entities/contact-message/contact-message.mailer.ts";
+import { contactMessageSchema } from "../../entities/contact-message/contact-message.schema.ts";
 import {
   CONTACT_METHODS,
   type ContactMessageInput,
   type ContactMessageResult,
-} from "../../../../entities/contact-message/contact-message.types.ts";
-import { siteConfig } from "../../../../lib/site.ts";
+} from "../../entities/contact-message/contact-message.types.ts";
+import { siteConfig } from "../../lib/site.ts";
 
 export const runtime = "nodejs";
 
@@ -228,11 +228,8 @@ function createContactMessageHandler(dependencies: ContactMessageDependencies = 
   };
 }
 
-const POST = createContactMessageHandler();
-
 export {
   CONTACT_METHODS,
-  POST,
   createContactMessageHandler,
   type ContactMessageInput,
   type ContactMessageResult,

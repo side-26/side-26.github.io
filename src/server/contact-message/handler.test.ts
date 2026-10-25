@@ -4,8 +4,12 @@ import { describe, it } from "node:test";
 import type {
   ContactMessageMailer,
   GmailContactMessageMailerConfiguration,
-} from "../../../../entities/contact-message/contact-message.mailer.ts";
-import { CONTACT_METHODS, createContactMessageHandler, type ContactMessageInput } from "./route.ts";
+} from "../../entities/contact-message/contact-message.mailer.ts";
+import {
+  CONTACT_METHODS,
+  createContactMessageHandler,
+  type ContactMessageInput,
+} from "./handler.ts";
 
 const API_KEY = "test-api-key-with-at-least-32-characters";
 const REQUEST_ID = "request-contact-message-001";
