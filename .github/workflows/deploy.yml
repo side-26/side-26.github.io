@@ -1,3 +1,4 @@
+
 name: Deploy GitHub Pages
 
 on:
@@ -39,13 +40,12 @@ jobs:
         run: pnpm build --webpack
 
       - name: Remove disabled routes
-        run: |
-          rm -rf out/contact
+        run: rm -rf out/contact
 
-            - name: Upload Pages artifact
-              uses: actions/upload-pages-artifact@v4
-              with:
-                path: ./out
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./out
 
   deploy:
     needs: build
