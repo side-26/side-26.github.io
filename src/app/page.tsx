@@ -174,25 +174,99 @@ const deliverySteps = [
   },
 ] as const;
 
-// Replace these placeholders with the real company names, dates, roles, descriptions, and marks.
 const careerExperiences = [
   {
-    company: "Company name",
-    from: "20XX",
-    to: "Present",
-    jobTitle: "Your most recent job title",
+    company: "MyRegal",
+    from: "Farvardin 1405",
+    to: "Mordad 1405",
+    jobTitle: "Frontend Engineer",
     description:
-      "Describe what you owned, the kind of product you helped build, and the concrete difference your work made for the team or its users.",
-    logo: "CO",
+      "Owned key frontend architecture and authentication workflows for a dynamic carpet catalog platform, with a focus on reliable data management, performance, and maintainability.",
+    contributions: [
+      "Designed frontend architecture and authentication flows, including silent token renewal to maintain user sessions.",
+      "Built a concurrent PDF-generation workflow producing image-heavy catalogs of up to 172 pages in at most two minutes.",
+      "Reduced source image sizes by 90% through image-processing optimizations.",
+      "Applied TanStack Query for mutations, Suspense queries, infinite scrolling, and cache revalidation strategies.",
+    ],
+    technologies: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "TanStack Query",
+      "Express.js",
+      "Puppeteer",
+      "Sharp",
+    ],
+    logo: "MR",
   },
   {
-    company: "Previous company",
-    from: "20XX",
-    to: "20XX",
-    jobTitle: "Your previous job title",
+    company: "MyRegal",
+    from: "Mordad 1404",
+    to: "Esfand 1404",
+    jobTitle: "Freelance Frontend Developer · Remote",
     description:
-      "Summarize the scope of the role, the systems or experiences you improved, and the strongest outcome that belongs in your career story.",
-    logo: "PC",
+      "Contributed to the development of a dynamic carpet catalog application as a remote freelance engagement, delivering frontend features for an evolving commercial product.",
+    contributions: [
+      "Developed and refined frontend features for the carpet catalog experience.",
+      "Translated business requirements into usable interfaces within an existing product workflow.",
+      "Built the product context that informed broader architectural ownership in the subsequent MyRegal role.",
+    ],
+    technologies: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "TanStack Query",
+      "Express.js",
+      "Puppeteer",
+      "Sharp",
+    ],
+    logo: "MR",
+  },
+  {
+    company: "Aseman Karmania",
+    from: "1404",
+    to: "1405",
+    jobTitle: "Frontend Engineer · Team Guidance",
+    description:
+      "Helped deliver public-sector applications with real-time interfaces, large-data reporting, and operational workflows while supporting the growth of other frontend developers.",
+    contributions: [
+      "Contributed to real-time operational interfaces for strategic public-sector applications.",
+      "Worked on reporting and download workflows involving substantial amounts of data.",
+      "Guided one frontend developer and two interns through implementation practices and project work.",
+    ],
+    technologies: ["Vue", "Nuxt", "TypeScript", "Real-time communication", "Reporting interfaces"],
+    logo: "AK",
+  },
+  {
+    company: "Aseman Karmania",
+    from: "1403",
+    to: "1404",
+    jobTitle: "Frontend Developer",
+    description:
+      "Built data-intensive frontend interfaces for emergency-response and operational systems, where real-time updates and efficient rendering were essential to usability.",
+    contributions: [
+      "Developed interfaces using Vue, Nuxt, and Vuetify.",
+      "Used virtualized lists to render large datasets more efficiently.",
+      "Integrated SignalR and Socket.IO for live operational updates.",
+      "Contributed to SOS, nationwide ambulance, and firefighter-management workflows.",
+    ],
+    technologies: ["Vue", "Nuxt", "Vuetify", "JavaScript", "TypeScript", "SignalR", "Socket.IO"],
+    logo: "AK",
+  },
+  {
+    company: "Hamoon",
+    from: "1401",
+    to: "1402",
+    jobTitle: "Frontend Developer",
+    description:
+      "Worked on frontend improvements in a startup environment, focusing on code maintainability and compatibility across devices.",
+    contributions: [
+      "Helped migrate JavaScript code toward TypeScript to improve maintainability and type safety.",
+      "Improved Progressive Web App compatibility on iOS.",
+      "Supported frontend development in a fast-moving product environment.",
+    ],
+    technologies: ["JavaScript", "TypeScript", "Progressive Web Apps"],
+    logo: "HA",
   },
 ] as const;
 

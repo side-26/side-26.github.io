@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { ApiError } from "../../lib/api/errors.ts";
 import type { ApiClient, ApiRequestOptions } from "../../lib/api/types.ts";
 import { createContactMessageService } from "./contact-message.service.ts";
 import type { ContactMessageInput, ContactMessageResponse } from "./contact-message.types.ts";
@@ -59,4 +60,16 @@ test("preserves request errors for the caller to present", async () => {
     createContactMessageService(api).send(input),
     (error: unknown) => error === expectedError,
   );
+});
+
+test("reports an unavailable delivery endpoint before making a request", async () => {
+  const api = {
+    async post() {
+      throw new Error("The API client must not be called when delivery is unconfigured.");
+    },
+  } as unknown as ApiClient;
+
+  await assert.rejects(createContactMessageService(api, false).send(input), (error: unknown) => {
+    return error instanceof ApiError && error.code === "CONFIGURATION_ERROR";
+  });
 });

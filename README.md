@@ -1,122 +1,62 @@
-# Portfolio Front App
+# Mahdi Rashidi Portfolio
 
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+A responsive, accessible personal portfolio for Mahdi Rashidi, built as a static Next.js application and published with GitHub Pages.
 
-A modern and responsive personal portfolio built to present my experience, technical skills, and selected projects in a clear and accessible format.
+## Technology stack
 
-## About the Project
+- Next.js 16 (App Router) and React 19
+- TypeScript, Tailwind CSS, and Framer Motion
+- pnpm 11 and Node.js 22
+- GitHub Actions and GitHub Pages for static hosting
 
-This application is the front-end for my personal developer portfolio. It provides a central place for visitors, collaborators, and potential employers to learn about my work and professional background.
+## Local development
 
-The project focuses on responsive design, reusable components, clean TypeScript code, and a consistent user experience across desktop and mobile devices.
-
-## Features
-
-- Responsive layout for desktop, tablet, and mobile screens
-- Introduction and professional summary
-- Technical skills and areas of expertise
-- Selected projects with relevant details and links
-- Education and experience information
-- Contact and social-media links
-- Reusable, maintainable React components
-- Accessible and user-friendly interface
-
-## Project Assets
-
-- `public/logo/logo.jpg` — the portfolio's primary square logo (1254 × 1254).
-- `public/images/mahdi-rashidi.webp` — Mahdi Rashidi's portfolio portrait (1537 × 1920).
-
-Both files live under `public/` and can be referenced from Next.js with the static URLs `/logo/logo.jpg` and `/images/mahdi-rashidi.webp`.
-
-## Tech Stack
-
-- **React** — component-based user interfaces
-- **TypeScript** — type-safe application development
-- **Vite** — development server and production build tooling
-- **HTML5 and CSS3** — semantic structure and responsive styling
-
-## Getting Started
-
-### Prerequisites
-
-Install the following before running the project:
-
-- [Node.js](https://nodejs.org/) 18 or newer
-- npm, pnpm, or Yarn
-
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/side-26/portfolio-front-app.git
-   ```
-
-2. Enter the project directory:
-
-   ```bash
-   cd portfolio-front-app
-   ```
-
-3. Install the dependencies:
-
-   ```bash
-   npm install
-   ```
-
-4. Start the development server:
-
-   ```bash
-   npm run dev
-   ```
-
-5. Open the local address displayed in your terminal, typically `http://localhost:5173`.
-
-## Available Scripts
-
-| Command           | Description                               |
-| ----------------- | ----------------------------------------- |
-| `npm run dev`     | Starts the local development server       |
-| `npm run build`   | Creates an optimized production build     |
-| `npm run preview` | Serves the production build locally       |
-| `npm run lint`    | Checks the source code for linting issues |
-
-## Production Build
-
-Create an optimized build with:
+Requirements: Node.js 22 and pnpm 11 (the exact pnpm version is pinned in `package.json`).
 
 ```bash
-npm run build
+git clone https://github.com/side-26/chief2001.github.io.git
+cd chief2001.github.io
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-The generated files will be available in the `dist` directory and can be deployed to services such as Vercel, Netlify, or GitHub Pages.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Roadmap
+Copy `.env.example` to `.env.local` when setting values locally. `NEXT_PUBLIC_SITE_URL` controls the canonical URL, sitemap, and social metadata. Do not expose SMTP credentials or API keys in `NEXT_PUBLIC_*` variables.
 
-- Add more project case studies
-- Improve accessibility and performance
-- Add automated tests
-- Add multilingual support
-- Connect the portfolio to a back-end service
+## Production build
 
-## Contributing
+```bash
+pnpm lint
+pnpm test
+pnpm build
+```
 
-Suggestions and improvements are welcome. To contribute:
+`pnpm build` runs Next.js static export and writes the deployable site to `out/`. The exported routes use trailing slashes, so GitHub Pages serves `/contact/` as `out/contact/index.html`.
 
-1. Fork the repository.
-2. Create a feature branch.
-3. Commit your changes.
-4. Push the branch to your fork.
-5. Open a pull request.
+## GitHub Pages deployment
 
-## Author
+The workflow at `.github/workflows/deploy.yml` runs on pushes to `main` and can also be started manually from the Actions tab. It installs the locked pnpm dependencies, runs the verified webpack production build into `out/`, uploads it as a Pages artifact, and deploys it with GitHub’s Pages deployment action.
 
-**Mahdi Rashidi**
+In the GitHub repository:
 
-- GitHub: [@side-26](https://github.com/side-26)
+1. Open **Settings → Pages**.
+2. Set **Source** to **GitHub Actions**.
+3. Push or merge this configuration into `main`, or run **Deploy GitHub Pages** manually.
+4. Optionally set the `CONTACT_API_BASE_URL` Actions variable to the public base URL of the separately hosted contact API. For example, `https://api.example.com` makes the form call `https://api.example.com/contact/message`.
 
----
+Because this repository is named `chief2001.github.io`, it is a user site rather than a project site. It is deployed from the domain root, with no `basePath` or `assetPrefix`. The expected production URL is:
 
-If you find this project useful, consider giving it a star.
+```text
+https://side-26.github.io/
+```
+
+## Contact delivery and static-hosting limits
+
+GitHub Pages hosts only static files. The former Next.js `POST /api/contact/message` SMTP handler has therefore been retained as server-only source in `src/server/contact-message/handler.ts`; it is not included in the static export. To enable submissions in production, deploy that handler behind a server-capable platform (for example, a small Next.js/Node service, Cloudflare Worker, or serverless function), configure SMTP secrets there, allow `https://side-26.github.io` via CORS, and set the `CONTACT_API_BASE_URL` Actions variable. The endpoint must preserve the existing `POST /contact/message` JSON contract.
+
+Without that variable, the contact form stays visible and validates inputs locally, but reports that delivery is not configured rather than attempting a broken request. GitHub Pages also cannot provide server-side rendering, Server Actions, request-aware API routes, secret environment variables, or on-demand Next.js image optimization. Images are exported as unoptimized static files; they retain explicit dimensions to avoid layout shift.
+
+## Optional custom domain
+
+Add the custom domain in **Settings → Pages**, then configure its DNS records with your domain provider as GitHub instructs. Set `NEXT_PUBLIC_SITE_URL` in the workflow (or update its build environment) to the final `https://your-domain.example` value before deploying so canonical URLs, sitemap entries, and Open Graph metadata use the custom domain. GitHub Pages will create or honor the required `CNAME` file.

@@ -1,3 +1,4 @@
+import { ApiError } from "@/lib/api/errors";
 import type { ApiClient } from "@/lib/api/types";
 
 import type {
@@ -10,9 +11,18 @@ export type ContactMessageService = {
   send(input: ContactMessageInput): Promise<ContactMessageResult>;
 };
 
-export function createContactMessageService(api: ApiClient): ContactMessageService {
+export function createContactMessageService(
+  api: ApiClient,
+  isConfigured = true,
+): ContactMessageService {
   return {
     async send(input) {
+      if (!isConfigured) {
+        throw new ApiError("Contact delivery is not configured.", {
+          code: "CONFIGURATION_ERROR",
+        });
+      }
+
       const response = await api.post<ContactMessageResponse, ContactMessageInput>(
         "/contact/message",
         {

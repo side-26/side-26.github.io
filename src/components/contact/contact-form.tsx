@@ -78,7 +78,10 @@ type SubmissionResult =
   | { status: "success"; channel: ContactMethod }
   | { status: "error"; message: string };
 
-const contactMessageService = createContactMessageService(browserApi);
+const contactMessageService = createContactMessageService(
+  browserApi,
+  Boolean(process.env.NEXT_PUBLIC_CONTACT_API_BASE_URL),
+);
 
 function ContactFields() {
   const { clearErrors, control, setValue } = useFormContext<ContactFormValues>();
