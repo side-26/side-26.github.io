@@ -52,7 +52,7 @@ import {
 } from "@/components/base/card";
 import { FigureImage } from "@/components/base/image";
 import { Separator } from "@/components/base/separator";
-import { siteConfig } from "@/lib/site";
+import { isContactRouteEnabled, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Mahdi Rashidi | Full-Stack Developer",
@@ -375,16 +375,18 @@ export default function HomePage() {
                 delay={0.26}
                 className="tw:flex tw:w-full tw:flex-col tw:gap-3 tw:sm:w-auto tw:sm:flex-row"
               >
-                <Link
-                  href="/contact"
-                  className={buttonVariants({
-                    size: "lg",
-                    className: "tw:w-full tw:sm:w-auto",
-                  })}
-                >
-                  Discuss a project
-                  <ArrowUpRight data-icon="inline-end" />
-                </Link>
+                {isContactRouteEnabled ? (
+                  <Link
+                    href="/contact"
+                    className={buttonVariants({
+                      size: "lg",
+                      className: "tw:w-full tw:sm:w-auto",
+                    })}
+                  >
+                    Discuss a project
+                    <ArrowUpRight data-icon="inline-end" />
+                  </Link>
+                ) : null}
                 <a
                   href="#trust"
                   className={buttonVariants({
@@ -780,44 +782,46 @@ export default function HomePage() {
             </div>
           </section>
 
-          <section id="contact" aria-labelledby="contact-title" className="tw:py-24 tw:sm:py-32">
-            <MotionReveal>
-              <div className="tw:relative tw:overflow-hidden tw:rounded-4xl tw:border tw:glass-surface tw:px-6 tw:py-14 tw:sm:px-10 tw:sm:py-20 tw:lg:px-16">
-                <div
-                  aria-hidden="true"
-                  className="tw:absolute tw:top-1/2 tw:-right-24 tw:size-80 tw:-translate-y-1/2 tw:rounded-full tw:border tw:border-primary/20"
-                />
-                <div
-                  aria-hidden="true"
-                  className="tw:absolute tw:top-1/2 tw:-right-10 tw:size-52 tw:-translate-y-1/2 tw:rounded-full tw:border tw:border-trust/15"
-                />
-                <div className="tw:relative tw:flex tw:max-w-3xl tw:flex-col tw:items-start tw:gap-7">
-                  <p className="tw:font-mono tw:text-xs tw:tracking-[0.22em] tw:text-primary tw:uppercase">
-                    Your project / next case file
-                  </p>
-                  <h2
-                    id="contact-title"
-                    className="tw:text-4xl tw:leading-[1.02] tw:font-extrabold tw:tracking-[-0.045em] tw:text-balance tw:sm:text-5xl tw:lg:text-6xl"
-                  >
-                    If the project matters, start with clarity.
-                  </h2>
-                  <p className="tw:max-w-2xl tw:text-lg tw:leading-8 tw:text-muted-foreground">
-                    Bring the brief, the pressure, and the unknowns. I’ll help turn them into a
-                    product plan people can trust and a build that earns that trust.
-                  </p>
-                  <div className="tw:flex tw:flex-col tw:gap-3 tw:sm:flex-row">
-                    <Link href="/contact" className={buttonVariants({ size: "lg" })}>
-                      Share your project brief
-                      <ArrowUpRight data-icon="inline-end" />
-                    </Link>
-                    <a href="#top" className={buttonVariants({ size: "lg", variant: "outline" })}>
-                      Back to the brief
-                    </a>
+          {isContactRouteEnabled ? (
+            <section id="contact" aria-labelledby="contact-title" className="tw:py-24 tw:sm:py-32">
+              <MotionReveal>
+                <div className="tw:relative tw:overflow-hidden tw:rounded-4xl tw:border tw:glass-surface tw:px-6 tw:py-14 tw:sm:px-10 tw:sm:py-20 tw:lg:px-16">
+                  <div
+                    aria-hidden="true"
+                    className="tw:absolute tw:top-1/2 tw:-right-24 tw:size-80 tw:-translate-y-1/2 tw:rounded-full tw:border tw:border-primary/20"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="tw:absolute tw:top-1/2 tw:-right-10 tw:size-52 tw:-translate-y-1/2 tw:rounded-full tw:border tw:border-trust/15"
+                  />
+                  <div className="tw:relative tw:flex tw:max-w-3xl tw:flex-col tw:items-start tw:gap-7">
+                    <p className="tw:font-mono tw:text-xs tw:tracking-[0.22em] tw:text-primary tw:uppercase">
+                      Your project / next case file
+                    </p>
+                    <h2
+                      id="contact-title"
+                      className="tw:text-4xl tw:leading-[1.02] tw:font-extrabold tw:tracking-[-0.045em] tw:text-balance tw:sm:text-5xl tw:lg:text-6xl"
+                    >
+                      If the project matters, start with clarity.
+                    </h2>
+                    <p className="tw:max-w-2xl tw:text-lg tw:leading-8 tw:text-muted-foreground">
+                      Bring the brief, the pressure, and the unknowns. I’ll help turn them into a
+                      product plan people can trust and a build that earns that trust.
+                    </p>
+                    <div className="tw:flex tw:flex-col tw:gap-3 tw:sm:flex-row">
+                      <Link href="/contact" className={buttonVariants({ size: "lg" })}>
+                        Share your project brief
+                        <ArrowUpRight data-icon="inline-end" />
+                      </Link>
+                      <a href="#top" className={buttonVariants({ size: "lg", variant: "outline" })}>
+                        Back to the brief
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </MotionReveal>
-          </section>
+              </MotionReveal>
+            </section>
+          ) : null}
         </main>
 
         <footer className="tw:flex tw:flex-col tw:items-start tw:gap-5 tw:border-t tw:border-border tw:py-8 tw:text-sm tw:text-muted-foreground tw:sm:flex-row tw:sm:items-center tw:sm:justify-between">

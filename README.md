@@ -101,7 +101,13 @@ To enable production contact submissions:
 
 Without the variable, the form remains available and validates input locally, then explains that delivery is not configured instead of sending a broken request.
 
+<<<<<<< HEAD
 ## Deployment
+=======
+The contact route is intentionally enabled only in local development for now. Production builds remove its navigation and sitemap entry, and render `/contact` as a no-index Not Found page.
+
+GitHub Pages hosts only static files. The former Next.js `POST /api/contact/message` SMTP handler has therefore been retained as server-only source in `src/server/contact-message/handler.ts`; it is not included in the static export. To enable submissions in production, deploy that handler behind a server-capable platform (for example, a small Next.js/Node service, Cloudflare Worker, or serverless function), configure SMTP secrets there, allow `https://side-26.github.io` via CORS, and set the `CONTACT_API_BASE_URL` Actions variable. The endpoint must preserve the existing `POST /contact/message` JSON contract.
+>>>>>>> develope
 
 GitHub Actions builds and deploys the static site using [deploy.yml](.github/workflows/deploy.yml). The workflow runs on pushes to `master` and can be triggered manually.
 

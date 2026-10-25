@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/base/button";
 import { cn } from "@/lib/utils";
-import { siteConfig } from "@/lib/site";
+import { isContactRouteEnabled, siteConfig } from "@/lib/site";
 
 const navigationItems = [
   { href: "/#trust", label: "How I work" },
@@ -47,32 +47,36 @@ function SiteHeader({ activePage = "home" }: { activePage?: "home" | "contact" }
             {item.label}
           </Link>
         ))}
-        <Link
-          href="/contact"
-          aria-current={isContactPage ? "page" : undefined}
-          className={cn(
-            "tw:rounded-sm tw:text-sm tw:transition-colors tw:focus-visible:ring-3 tw:focus-visible:ring-ring/35 tw:focus-visible:outline-none",
-            isContactPage
-              ? "tw:font-medium tw:text-primary"
-              : "tw:text-muted-foreground tw:hover:text-foreground",
-          )}
-        >
-          Contact
-        </Link>
+        {isContactRouteEnabled ? (
+          <Link
+            href="/contact"
+            aria-current={isContactPage ? "page" : undefined}
+            className={cn(
+              "tw:rounded-sm tw:text-sm tw:transition-colors tw:focus-visible:ring-3 tw:focus-visible:ring-ring/35 tw:focus-visible:outline-none",
+              isContactPage
+                ? "tw:font-medium tw:text-primary"
+                : "tw:text-muted-foreground tw:hover:text-foreground",
+            )}
+          >
+            Contact
+          </Link>
+        ) : null}
       </nav>
 
       <div className="tw:flex tw:items-center tw:gap-2">
-        <Link
-          href="/contact"
-          aria-current={isContactPage ? "page" : undefined}
-          className={buttonVariants({
-            size: "sm",
-            variant: isContactPage ? "secondary" : "outline",
-            className: "tw:md:hidden",
-          })}
-        >
-          Contact
-        </Link>
+        {isContactRouteEnabled ? (
+          <Link
+            href="/contact"
+            aria-current={isContactPage ? "page" : undefined}
+            className={buttonVariants({
+              size: "sm",
+              variant: isContactPage ? "secondary" : "outline",
+              className: "tw:md:hidden",
+            })}
+          >
+            Contact
+          </Link>
+        ) : null}
         <a
           href={siteConfig.githubUrl}
           target="_blank"

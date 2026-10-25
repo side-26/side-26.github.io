@@ -37,14 +37,15 @@ jobs:
 
       - name: Build static site
         run: pnpm build --webpack
-        env:
-          NEXT_PUBLIC_CONTACT_API_BASE_URL: ${{ vars.CONTACT_API_BASE_URL }}
-          NEXT_PUBLIC_SITE_URL: https://${{ github.repository_owner }}.github.io
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: ./out
+      - name: Remove disabled routes
+        run: |
+          rm -rf out/contact
+
+            - name: Upload Pages artifact
+              uses: actions/upload-pages-artifact@v4
+              with:
+                path: ./out
 
   deploy:
     needs: build

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 import { Badge } from "@/components/base/badge";
 import { buttonVariants } from "@/components/base/button";
@@ -12,7 +13,7 @@ import {
   ScrollProgress,
 } from "@/components/landing/motion";
 import { SiteHeader } from "@/components/landing/site-header";
-import { siteConfig } from "@/lib/site";
+import { isContactRouteEnabled, siteConfig } from "@/lib/site";
 
 const pageDescription =
   "Share your full-stack project brief with Mahdi Rashidi and choose the most comfortable way to continue the conversation.";
@@ -67,6 +68,10 @@ const structuredData = {
 };
 
 export default function ContactPage() {
+  if (!isContactRouteEnabled) {
+    notFound();
+  }
+
   return (
     <MotionProvider>
       <ScrollProgress />
